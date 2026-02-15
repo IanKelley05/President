@@ -33,7 +33,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('bg.jpg') no-repeat center center fixed; 
+            /* ADDED '?v=2' TO FORCE RELOAD OF THE IMAGE */
+            background: url('bg.jpg?v=2') no-repeat center center fixed; 
             background-size: cover;
             filter: blur(8px); 
             z-index: -1;
@@ -249,6 +250,8 @@
         .podium-image {
             width: 100%;
             height: auto;
+            /* Added explicit max-height to ensure it doesn't break layout */
+            max-height: 400px;
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
         }
 
@@ -275,15 +278,13 @@
             letter-spacing: 1px;
         }
 
-        /* --- FINALE STYLING UPDATED (RED THEME) --- */
+        /* --- FINALE STYLING (RED THEME) --- */
         #finale-content {
             max-width: 600px;
             padding: 40px;
-            /* Bold Red Gradient to stand out against blue background */
             background: linear-gradient(135deg, var(--red) 0%, var(--dark-red) 100%);
             border: 4px solid var(--gold);
             border-radius: 15px;
-            /* Strong Shadow */
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
             text-align: center;
             position: relative;
@@ -296,7 +297,7 @@
             margin-bottom: 30px;
         }
 
-        /* Special Yes Button styles for the red box */
+        /* Special Yes Button styles */
         #yes-btn {
             background-color: var(--white);
             color: var(--red);
@@ -388,7 +389,7 @@
         </div>
 
         <div id="podium-area" class="podium-container hidden">
-            <img src="podium.png" alt="Podium" class="podium-image" id="podium-img">
+            <img src="podium.png?v=2" alt="Podium" class="podium-image" id="podium-img">
             
             <div class="placard">
                 <div class="placard-text" id="placard-name">GUEST</div>
@@ -411,7 +412,7 @@
             {
                 q: "Who was the only U.S. President to serve more than two terms?",
                 options: ["G. Washington", "F. D. Roosevelt", "U. S. Grant", "T. Roosevelt"],
-                a: 1 // Index of correct answer
+                a: 1 
             },
             {
                 q: "Which President is known for the 'Gettysburg Address'?",
@@ -447,7 +448,6 @@
         const placardName = document.getElementById('placard-name');
         const finaleScreen = document.getElementById('finale-screen');
         const finaleText = document.getElementById('finale-text');
-        const finaleContent = document.getElementById('finale-content');
         const yesBtn = document.getElementById('yes-btn');
         const errorMsg = document.getElementById('error-msg');
         
@@ -459,7 +459,7 @@
         function checkNameAndStart() {
             const inputName = document.getElementById('name-input').value.trim();
             
-            // SECURITY CHECK: Only Minali allowed (case insensitive)
+            // SECURITY CHECK
             if (inputName.toLowerCase() !== "minali") {
                 errorMsg.style.display = 'block';
                 const input = document.getElementById('name-input');
@@ -540,19 +540,15 @@
         }
 
         function acceptProposal() {
-            // STOP background music
             sfxMusic.pause();
             
-            // PLAY Celebration music
             sfxCelebration.volume = 1.0; 
             sfxCelebration.play();
 
             startConfetti();
             
-            // HIDE the yes button
             yesBtn.style.display = 'none';
 
-            // REPLACE the text with the celebration message
             finaleText.innerHTML = `
                 <h1 style="color: #C5B358; font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px #000;">
                     YAY!!<br>HAPPY PRESIDENTS DAY!!
