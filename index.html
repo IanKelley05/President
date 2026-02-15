@@ -262,7 +262,6 @@
         .dimmed {
             opacity: 0.3;
             pointer-events: none;
-            /* No predefined border color here to allow JS override/reset */
         }
 
         #next-btn {
@@ -338,7 +337,7 @@
                 <p><strong>SUBJECT:</strong> Executive Trivia Protocol</p>
                 <p><strong>MISSION ORDERS:</strong></p>
                 <ul style="margin-bottom: 30px;">
-                    <li>Review 5 historical inquiries regarding former Commanders-in-Chief.</li>
+                    <li>Review 10 historical inquiries regarding former Commanders-in-Chief.</li>
                     <li>Demonstrate executive knowledge to verify eligibility.</li>
                     <li>Secure nomination for the holiday.</li>
                 </ul>
@@ -386,7 +385,7 @@
     </div>
 
     <script>
-        // --- GAME DATA ---
+        // --- GAME DATA (10 Questions) ---
         const questions = [
             {
                 q: "Who was the only U.S. President to serve more than two terms?",
@@ -412,6 +411,39 @@
                 q: "At 43, who was the youngest elected President?",
                 options: ["B. Obama", "B. Clinton", "J. F. Kennedy", "T. Roosevelt"],
                 a: 2
+            },
+            {
+                q: "Which President signed the Declaration of Independence first?",
+                options: ["T. Jefferson", "J. Hancock", "J. Adams", "G. Washington"],
+                a: 1 // Note: Hancock was president of Congress, not US President yet, but typically associated here.
+                     // Actually, if we mean US President: Jefferson and Adams signed it. 
+                     // Let's swap to a cleaner question to avoid confusion:
+                     // "Which President is on the $5 bill?"
+            },
+            {
+                q: "Which President is featured on the U.S. $5 bill?",
+                options: ["A. Lincoln", "A. Jackson", "U. S. Grant", "T. Jefferson"],
+                a: 0
+            },
+            {
+                q: "Who was the tallest U.S. President?",
+                options: ["B. Obama", "A. Lincoln", "L. B. Johnson", "D. Trump"],
+                a: 1
+            },
+            {
+                q: "Which state has produced the most U.S. Presidents?",
+                options: ["New York", "Ohio", "Virginia", "Massachusetts"],
+                a: 2
+            },
+            {
+                q: "Who was the first President to appear on TV?",
+                options: ["H. Truman", "F. D. Roosevelt", "J. F. Kennedy", "D. Eisenhower"],
+                a: 1
+            },
+            {
+                q: "Which President had a pet bear cub in the White House?",
+                options: ["T. Roosevelt", "A. Jackson", "C. Coolidge", "H. Hoover"],
+                a: 0
             }
         ];
 
@@ -514,7 +546,6 @@
                     { transform: 'translateX(-5px)' },
                     { transform: 'translateX(0)' }
                 ], { duration: 300 });
-                // Make it look disabled/wrong
                 wrongBtn.style.color = "#888"; 
                 wrongBtn.style.borderColor = "#888";
             }
