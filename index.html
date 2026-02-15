@@ -30,10 +30,10 @@
             height: 100%;
             width: 100%;
             font-family: var(--font-sans);
-            background-color: #003366; /* Fallback blue */
+            background-color: #003366; 
             color: var(--off-white);
             overflow: hidden;
-            /* Rich Presidential Blue Gradient - GLOBAL */
+            /* Global Blue Gradient */
             background-image: radial-gradient(circle at 50% 40%, #003366 0%, #020817 100%);
         }
 
@@ -64,7 +64,7 @@
             z-index: 200;
             transition: opacity 0.5s ease-out;
             text-align: center;
-            /* Slight dark tint to ensure text readability over the bright blue center */
+            /* Slight dark tint so text pops */
             background: rgba(2, 8, 23, 0.5);
         }
 
@@ -181,7 +181,6 @@
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s;
-            /* Semi-transparent background so the blue shows through */
             background: rgba(2, 8, 23, 0.6);
             border: 1px solid var(--pres-gold);
             padding: 40px;
@@ -284,7 +283,6 @@
         
         /* --- FINALE --- */
         .finale-card {
-            /* Semi-transparent background so the blue shows through */
             background: rgba(2, 8, 23, 0.85);
             border: 1px solid var(--pres-gold);
             padding: 60px;
@@ -350,7 +348,7 @@
                 </p>
             </div>
             <div style="text-align: center; margin-top: 20px;">
-                <button class="btn-start" style="background-color: var(--pres-navy);" onclick="enterSituationRoom()">ENTER SITUATION ROOM</button>
+                <button class="btn-start" style="background-color: var(--pres-red);" onclick="enterSituationRoom()">ENTER SITUATION ROOM</button>
             </div>
         </div>
     </div>
@@ -375,7 +373,7 @@
     </div>
 
     <div id="finale-screen" class="overlay hidden">
-        <div class="finale-card">
+        <div class="finale-card" id="finale-card-content">
             <h1 style="border:none; margin-bottom: 10px; font-size: 2.5rem; color: var(--pres-gold);">Briefing Complete</h1>
             <p style="font-size: 1.4rem; line-height: 1.6; margin-bottom: 30px; font-family: var(--font-serif);">
                 Distinguished performance. You are clearly fit for the highest office.<br><br>
@@ -429,6 +427,7 @@
         const successMsg = document.getElementById('success-msg');
         const qText = document.getElementById('q-text');
         const nextBtn = document.getElementById('next-btn');
+        const finaleCardContent = document.getElementById('finale-card-content');
         
         const sfxFanfare = document.getElementById('sfx-fanfare');
         const sfxMusic = document.getElementById('sfx-music');
@@ -445,18 +444,14 @@
                 return;
             }
 
-            // Success Animation
             userName = name;
             errorMsg.style.display = 'none';
             successMsg.style.display = 'block';
             input.style.borderColor = "#28a745";
             
-            // Wait 1.5s then Go to Briefing
             setTimeout(() => {
                 introScreen.classList.add('hidden');
                 briefingScreen.classList.remove('hidden');
-                
-                // Play Fanfare for the "Briefing"
                 sfxFanfare.play().catch(e => console.log("Audio needed interaction"));
             }, 1500);
         }
@@ -465,11 +460,8 @@
         function enterSituationRoom() {
             briefingScreen.classList.add('hidden');
             appContainer.style.display = 'flex';
-            
-            // Start Loop Music
             sfxMusic.volume = 0.2;
             sfxMusic.play();
-
             loadQuestion();
         }
 
@@ -479,20 +471,16 @@
                 return;
             }
 
-            // Reset UI
             nextBtn.style.display = 'none';
             const btns = document.querySelectorAll('.answer-btn');
             btns.forEach(btn => {
                 btn.classList.remove('dimmed', 'correct-anim');
                 btn.style.pointerEvents = "all";
-                // Reset Text content
             });
 
-            // Load Content
             const q = questions[currentQIndex];
             qText.textContent = q.q;
             
-            // Set Text for Buttons
             document.getElementById('btn-0').textContent = q.options[0];
             document.getElementById('btn-1').textContent = q.options[1];
             document.getElementById('btn-2').textContent = q.options[2];
@@ -504,7 +492,6 @@
             const btns = document.querySelectorAll('.answer-btn');
 
             if (choiceIndex === correctIndex) {
-                // CORRECT
                 btns.forEach((btn, idx) => {
                     if (idx === correctIndex) {
                         btn.classList.add('correct-anim');
@@ -513,21 +500,15 @@
                         btn.classList.add('dimmed');
                     }
                 });
-                
-                // Show Next Button
                 nextBtn.style.display = 'inline-block';
-
             } else {
-                // WRONG - Shake the button
                 const wrongBtn = document.getElementById('btn-' + choiceIndex);
-                // Shake effect manually or via class
                 wrongBtn.animate([
                     { transform: 'translateX(0)' },
                     { transform: 'translateX(5px)' },
                     { transform: 'translateX(-5px)' },
                     { transform: 'translateX(0)' }
                 ], { duration: 300 });
-                
                 wrongBtn.style.color = "#888"; 
                 wrongBtn.style.borderColor = "#888";
             }
@@ -552,10 +533,14 @@
             sfxCelebration.play();
             
             startConfetti();
-            document.getElementById('yes-btn').style.display = 'none';
             
-            document.getElementById('proposal-text').innerHTML = 
-                "YAY! HAPPY PRESIDENTS DAY! <br> ❤️ 🇺🇸 ❤️";
+            // UPDATED: Replace entire card content with just the final message
+            finaleCardContent.innerHTML = `
+                <h1 style="border:none; color: var(--pres-gold); font-size: 3rem; margin-bottom: 20px;">Thank You, Madam President.</h1>
+                <p style="font-size: 2.5rem; color: white; font-family: var(--font-serif); margin-top: 30px;">
+                    I Love You. ❤️
+                </p>
+            `;
         }
 
         /* --- CONFETTI --- */
