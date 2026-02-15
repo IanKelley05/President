@@ -23,36 +23,24 @@
             width: 100%;
             font-family: var(--font-main);
             overflow: hidden; 
-            background-color: #111;
-        }
-
-        /* --- THE GENERATED CURTAIN BACKGROUND --- */
-        .bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
             
-            /* 1. Base Navy Color */
-            background-color: #002868;
+            /* --- THE CURTAIN BACKGROUND (Directly on Body) --- */
+            background-color: #002868; /* Fallback Blue */
             
-            /* 2. The "Curtain Fold" Effect */
+            /* The Curtain Effect: Spotlight + Folds */
             background-image: 
-                /* A. Spotlight: Makes the center bright and corners dark */
-                radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.5) 80%),
-                
-                /* B. Vertical Folds: Repeating stripes of dark/light blue */
+                radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.6) 90%),
                 repeating-linear-gradient(
                     90deg,
-                    #001838 0px,      /* Shadow */
-                    #002868 40px,     /* Mid-tone */
-                    #003380 80px,     /* Highlight */
-                    #002868 120px,    /* Mid-tone */
-                    #001838 160px     /* Shadow */
+                    #00102a 0px,      /* Deep Shadow */
+                    #002868 40px,     /* Main Navy */
+                    #0040a0 80px,     /* Highlight Fold */
+                    #002868 120px,    /* Main Navy */
+                    #00102a 160px     /* Deep Shadow */
                 );
         }
+
+        /* REMOVED .bg-container entirely to prevent layering issues */
 
         /* Layout Container */
         #app-container {
@@ -72,8 +60,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Slightly darker overlay for text readability */
-            background: rgba(0, 20, 50, 0.85); 
+            /* Make this slightly transparent so we can see the curtain behind it */
+            background: rgba(0, 20, 50, 0.9); 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -379,8 +367,6 @@
     <audio id="sfx-music" src="background-music.mp3" loop></audio>
     <audio id="sfx-celebration" src="celebration.mp3" loop></audio>
 
-    <div class="bg-container"></div>
-    
     <canvas id="confetti-canvas"></canvas>
 
     <div id="intro-screen" class="overlay">
