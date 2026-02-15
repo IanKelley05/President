@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Presidential Trivia Challenge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <style>
         /* --- RESET & VARIABLES --- */
         :root {
-            --kahoot-red: #e21b3c;
-            --kahoot-blue: #1368ce;
-            --kahoot-gold: #d89e00;
-            --kahoot-green: #26890c;
-            --navy-bg: #020817;
+            --pres-navy: #002868;
+            --pres-red: #BF0A30;
+            --pres-gold: #C5B358;
+            --pres-silver: #E5E5E5;
+            --navy-bg: #0a1f4d;
             --white: #ffffff;
-            --font-stack: 'Poppins', sans-serif;
+            --font-game: 'Poppins', sans-serif;
+            --font-title: 'Playfair Display', serif; /* Elegant Presidential Font */
         }
 
         * {
             box-sizing: border-box;
-            user-select: none; /* Prevents text highlighting */
+            user-select: none;
         }
 
         body, html {
@@ -28,11 +29,11 @@
             padding: 0;
             height: 100%;
             width: 100%;
-            font-family: var(--font-stack);
+            font-family: var(--font-game);
             background-color: var(--navy-bg);
             overflow: hidden;
-            /* Cool Radial Background */
-            background-image: radial-gradient(circle at 50% 50%, #0a1f4d 0%, #020817 100%);
+            /* Presidential Radial Background */
+            background-image: radial-gradient(circle at 50% 40%, #1a3a70 0%, #020817 100%);
         }
 
         /* --- LAYOUT CONTAINERS --- */
@@ -41,27 +42,29 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Spreads items out */
+            justify-content: center; /* Centered without podium */
             align-items: center;
             padding: 20px;
             position: relative;
             z-index: 10;
         }
 
-        /* --- INTRO SCREEN (Big & Modern) --- */
+        /* --- OLD TITLE SLIDE (Restored) --- */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(2, 8, 23, 0.95);
+            background: rgba(2, 8, 23, 0.98); /* Darker opacity for seriousness */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 200;
-            transition: opacity 0.4s ease-out;
+            transition: opacity 0.5s ease-out;
+            text-align: center;
+            color: white;
         }
 
         .overlay.hidden {
@@ -69,72 +72,76 @@
             pointer-events: none;
         }
 
-        .title-box {
-            background: var(--white);
-            padding: 20px 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.2);
-            margin-bottom: 40px;
-            transform: rotate(-2deg);
-            animation: float 3s infinite ease-in-out;
+        h1 {
+            font-family: var(--font-title); /* Serif Font */
+            font-size: 3.5rem;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border-bottom: 3px solid var(--pres-red);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        h1 {
-            margin: 0;
-            font-size: 3rem;
-            color: var(--navy-bg);
-            text-transform: uppercase;
-            font-weight: 900;
-            text-align: center;
-            line-height: 1;
+        .subtitle {
+            font-family: var(--font-game);
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 30px;
         }
 
         input[type="text"] {
-            padding: 20px;
+            padding: 15px;
             font-size: 1.5rem;
-            border: 4px solid #ccc;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
+            border: 2px solid var(--pres-gold);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 350px;
             text-align: center;
-            font-family: var(--font-stack);
-            font-weight: bold;
+            font-family: var(--font-title);
             outline: none;
-            transition: border 0.2s;
+            transition: all 0.3s;
         }
 
         input[type="text"]:focus {
-            border-color: var(--kahoot-blue);
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 15px var(--pres-gold);
         }
 
         .btn-start {
-            margin-top: 20px;
-            padding: 20px 60px;
-            font-size: 1.8rem;
-            background-color: var(--kahoot-blue);
+            margin-top: 30px;
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            background-color: var(--pres-red);
             color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 900;
+            border: 1px solid white;
+            border-radius: 5px;
+            font-family: var(--font-title);
+            text-transform: uppercase;
+            letter-spacing: 2px;
             cursor: pointer;
-            box-shadow: 0 8px 0 #0b4a99; /* 3D effect */
-            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s, background 0.2s;
         }
 
-        .btn-start:active {
-            transform: translateY(4px);
-            box-shadow: 0 4px 0 #0b4a99;
+        .btn-start:hover {
+            transform: scale(1.05);
+            background-color: #a00020;
         }
 
-        /* --- GAME BOARD --- */
+        /* --- GAME BOARD (Big & Presidential) --- */
         #game-board {
             width: 100%;
-            max-width: 1000px;
+            max-width: 900px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex-grow: 1; /* Takes up available space */
-            margin-top: 20px;
+            height: 80%; /* Takes up most of screen */
+            justify-content: center;
             transition: opacity 0.5s;
         }
 
@@ -142,22 +149,24 @@
         .question-card {
             background: var(--white);
             width: 100%;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-            min-height: 150px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+            border-top: 5px solid var(--pres-navy);
+            border-bottom: 5px solid var(--pres-red);
+            min-height: 180px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
 
         .question-text {
-            font-size: 1.8rem; /* BIG TEXT */
+            font-size: 2rem;
             font-weight: 700;
-            color: #333;
+            color: #222;
+            font-family: var(--font-game);
         }
 
         /* Answer Grid */
@@ -165,34 +174,42 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 15px;
+            gap: 20px;
             width: 100%;
-            height: 100%;
-            max-height: 400px; /* Limit height so podium fits */
+            flex-grow: 1; /* Fills remaining space */
         }
 
         .answer-btn {
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 20px;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center; /* Center text */
+            justify-content: center;
             text-align: center;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
             transition: transform 0.1s, opacity 0.3s;
             position: relative;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        /* Kahoot Colors */
-        .btn-red { background-color: var(--kahoot-red); }
-        .btn-blue { background-color: var(--kahoot-blue); }
-        .btn-gold { background-color: var(--kahoot-gold); }
-        .btn-green { background-color: var(--kahoot-green); }
+        /* Presidential Colors */
+        .btn-navy { background-color: var(--pres-navy); }
+        .btn-red { background-color: var(--pres-red); }
+        .btn-gold { 
+            background-color: var(--pres-gold); 
+            color: #000; /* Dark text for contrast */
+            text-shadow: none;
+        }
+        .btn-silver { 
+            background-color: var(--pres-silver); 
+            color: #222; /* Dark text */
+            text-shadow: none;
+        }
 
         .answer-btn:active {
             transform: translateY(4px);
@@ -201,100 +218,57 @@
 
         /* Feedback States */
         .dimmed { opacity: 0.3; pointer-events: none; }
-        .correct-anim { transform: scale(1.05); box-shadow: 0 0 30px white; z-index: 10; }
+        .correct-anim { transform: scale(1.02); box-shadow: 0 0 20px white; z-index: 10; }
         
-        /* Next Button (Floats over game) */
+        /* Next Button */
         #next-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            font-size: 2rem;
-            background: white;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            background: var(--pres-gold);
             color: black;
-            border: 4px solid black;
+            border: 3px solid white;
+            border-radius: 50px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 10px 10px 0 black;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             z-index: 100;
             display: none;
+            text-transform: uppercase;
         }
         
         #next-btn:active {
-            transform: translate(-50%, -45%);
-            box-shadow: 5px 5px 0 black;
-        }
-
-        /* --- PODIUM (Bottom) --- */
-        .podium-wrapper {
-            position: relative;
-            margin-top: auto; /* Push to bottom */
-            z-index: 50;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .podium-img {
-            width: 250px; /* Bigger podium */
-            max-width: 80vw;
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
-        }
-
-        .placard {
-            position: absolute;
-            top: 55px; /* Adjust based on image */
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(to right, #cfc09f, #ffecb3, #cfc09f);
-            padding: 8px 20px;
-            border: 2px solid #8a6e2f;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            text-align: center;
-            min-width: 140px;
-        }
-
-        .placard-text {
-            font-family: 'Times New Roman', serif;
-            font-weight: bold;
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            color: black;
-            letter-spacing: 1px;
+            transform: translate(-50%, -48%);
         }
 
         /* --- FINALE --- */
         .finale-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
+            background: linear-gradient(135deg, var(--pres-navy), #000);
+            border-radius: 15px;
+            padding: 50px;
             text-align: center;
-            max-width: 600px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            animation: popIn 0.5s ease-out;
-            border: 5px solid var(--kahoot-blue);
+            max-width: 700px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border: 4px solid var(--pres-gold);
+            color: white;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes popIn {
             0% { transform: scale(0.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
-        @keyframes float {
-            0% { transform: rotate(-2deg) translateY(0px); }
-            50% { transform: rotate(-2deg) translateY(-10px); }
-            100% { transform: rotate(-2deg) translateY(0px); }
-        }
 
         /* Mobile Tweaks */
         @media (max-width: 600px) {
-            .question-text { font-size: 1.3rem; }
+            h1 { font-size: 2.2rem; }
+            .question-text { font-size: 1.4rem; }
             .answers-grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr); gap: 10px; }
-            .answer-btn { padding: 15px; font-size: 1.1rem; height: 70px; }
-            .podium-img { width: 180px; }
-            .placard { top: 40px; font-size: 0.8rem; }
+            .answer-btn { padding: 15px; font-size: 1.2rem; min-height: 70px; }
+            #game-board { height: 90%; }
         }
     </style>
 </head>
@@ -303,15 +277,15 @@
     <audio id="sfx-fanfare" src="fanfare.mp3"></audio>
     <audio id="sfx-music" src="background-music.mp3" loop></audio>
     <audio id="sfx-celebration" src="celebration.mp3" loop></audio>
+
     <canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999;"></canvas>
 
     <div id="intro-screen" class="overlay">
-        <div class="title-box">
-            <h1>Presidential<br>Trivia</h1>
-        </div>
-        <input type="text" id="name-input" placeholder="Enter Game PIN..." value="" style="display:none;"> <input type="text" id="real-name-input" placeholder="Enter Name" autocomplete="off">
-        <button class="btn-start" onclick="checkNameAndStart()">JOIN GAME</button>
-        <p id="error-msg" style="color: #ff4444; margin-top: 20px; font-weight:900; font-size: 1.2rem; display: none;">ACCESS DENIED: IDENTITY UNVERIFIED</p>
+        <h1>Presidential Briefing</h1>
+        <p class="subtitle">Please identify yourself for the press.</p>
+        <input type="text" id="name-input" placeholder="ENTER NAME" autocomplete="off">
+        <button class="btn-start" onclick="checkNameAndStart()">Start Briefing</button>
+        <p id="error-msg" style="color: #ff4444; margin-top: 20px; font-weight:bold; letter-spacing: 1px; display: none;">ACCESS DENIED</p>
     </div>
 
     <div id="app-container" style="display:none;">
@@ -322,35 +296,28 @@
             </div>
 
             <div class="answers-grid">
-                <button class="answer-btn btn-red" id="btn-0" onclick="handleAnswer(0)">A</button>
-                <button class="answer-btn btn-blue" id="btn-1" onclick="handleAnswer(1)">B</button>
+                <button class="answer-btn btn-navy" id="btn-0" onclick="handleAnswer(0)">A</button>
+                <button class="answer-btn btn-red" id="btn-1" onclick="handleAnswer(1)">B</button>
                 <button class="answer-btn btn-gold" id="btn-2" onclick="handleAnswer(2)">C</button>
-                <button class="answer-btn btn-green" id="btn-3" onclick="handleAnswer(3)">D</button>
+                <button class="answer-btn btn-silver" id="btn-3" onclick="handleAnswer(3)">D</button>
             </div>
             
-            <button id="next-btn" onclick="nextQuestion()">NEXT ></button>
-        </div>
-
-        <div class="podium-wrapper">
-            <img src="https://iankelley05.github.io/President/podium.png" class="podium-img" alt="Podium">
-            <div class="placard">
-                <div class="placard-text" id="placard-name">GUEST</div>
-            </div>
+            <button id="next-btn" onclick="nextQuestion()">Next Question ></button>
         </div>
 
     </div>
 
     <div id="finale-screen" class="overlay hidden">
         <div class="finale-card">
-            <h1 style="color: var(--kahoot-blue); font-size: 2.5rem; margin-bottom: 20px;">QUIZ COMPLETE!</h1>
-            <p style="font-size: 1.5rem; line-height: 1.5; color: #555; margin-bottom: 30px;">
-                Wow, you scored perfectly! Someone is fit to be President...<br><br>
-                <strong>But I have one last question for you:</strong>
+            <h1 style="border:none; margin-bottom: 10px; font-size: 2.5rem;">Briefing Complete</h1>
+            <p style="font-size: 1.5rem; line-height: 1.6; margin-bottom: 30px; font-family: var(--font-game);">
+                Distinguished performance. You are clearly fit for the highest office.<br><br>
+                <strong>But first, I have one question:</strong>
             </p>
-            <h2 id="proposal-text" style="color: var(--kahoot-red); font-size: 2rem; margin-bottom: 30px;">
+            <h2 id="proposal-text" style="color: var(--pres-gold); font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 40px;">
                 Minali, will you be my President for Presidents Day?
             </h2>
-            <button class="btn-start" id="yes-btn" onclick="acceptProposal()" style="background-color: var(--kahoot-green);">YES!</button>
+            <button class="btn-start" id="yes-btn" onclick="acceptProposal()" style="background-color: var(--pres-green); border-color: var(--pres-gold);">YES!</button>
         </div>
     </div>
 
@@ -393,29 +360,24 @@
         const errorMsg = document.getElementById('error-msg');
         const qText = document.getElementById('q-text');
         const nextBtn = document.getElementById('next-btn');
-        const placardName = document.getElementById('placard-name');
         
         const sfxFanfare = document.getElementById('sfx-fanfare');
         const sfxMusic = document.getElementById('sfx-music');
         const sfxCelebration = document.getElementById('sfx-celebration');
 
         function checkNameAndStart() {
-            const input = document.getElementById('real-name-input');
+            const input = document.getElementById('name-input');
             const name = input.value.trim();
 
             if (name.toLowerCase() !== "minali") {
                 errorMsg.style.display = 'block';
                 input.style.borderColor = "red";
-                // Shake effect
-                input.style.transform = "translateX(5px)";
-                setTimeout(() => input.style.transform = "translateX(0)", 100);
-                setTimeout(() => input.style.transform = "translateX(-5px)", 200);
-                setTimeout(() => input.style.transform = "translateX(0)", 300);
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
                 return;
             }
 
             userName = name;
-            placardName.textContent = userName;
             
             // Start Audio
             sfxFanfare.play().catch(e => console.log("Audio needed interaction"));
@@ -464,7 +426,7 @@
                 btns.forEach((btn, idx) => {
                     if (idx === correctIndex) {
                         btn.classList.add('correct-anim');
-                        btn.textContent = "CORRECT!";
+                        btn.innerHTML = "CORRECT &#10003;"; // Checkmark
                     } else {
                         btn.classList.add('dimmed');
                     }
@@ -476,13 +438,8 @@
             } else {
                 // WRONG - Shake the button
                 const wrongBtn = document.getElementById('btn-' + choiceIndex);
-                wrongBtn.style.backgroundColor = "#555"; // Grey out wrong answer
-                wrongBtn.textContent = "X";
-                
-                // Shake
-                wrongBtn.style.transform = "translateX(5px)";
-                setTimeout(() => wrongBtn.style.transform = "translateX(-5px)", 100);
-                setTimeout(() => wrongBtn.style.transform = "translateX(0)", 200);
+                wrongBtn.style.backgroundColor = "#555"; 
+                wrongBtn.textContent = "Try Again";
             }
         }
 
@@ -511,7 +468,7 @@
                 "YAY! HAPPY PRESIDENTS DAY! <br> ❤️ 🇺🇸 ❤️";
         }
 
-        /* --- CONFETTI (Standard) --- */
+        /* --- CONFETTI --- */
         const canvas = document.getElementById("confetti-canvas");
         const ctx = canvas.getContext("2d");
         let cx = window.innerWidth;
@@ -525,10 +482,10 @@
         const terminalVelocity = 5;
         const drag = 0.075;
         const colors = [
-            { front : '#e21b3c', back: '#a3001a' },
-            { front : '#1368ce', back: '#0a4085' },
-            { front : '#d89e00', back: '#946c00' },
-            { front : '#26890c', back: '#154f06' }
+            { front : '#BF0A30', back: '#7c0a22' }, 
+            { front : '#002868', back: '#001942' }, 
+            { front : '#FFFFFF', back: '#dcdcdc' }, 
+            { front : '#C5B358', back: '#8c7e3b' } 
         ];
 
         window.addEventListener('resize', () => {
