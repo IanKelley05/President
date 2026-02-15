@@ -13,7 +13,6 @@
             --pres-red: #B22222;  /* Deep Red */
             --pres-gold: #D4AF37; /* Metallic Gold */
             --off-white: #F8F8F8;
-            --glass-panel: rgba(5, 10, 20, 0.85);
             
             --font-serif: 'Playfair Display', serif;
             --font-mono: 'Courier Prime', monospace;
@@ -34,7 +33,7 @@
             background-color: var(--deep-navy);
             color: var(--off-white);
             overflow: hidden;
-            /* Subtle vignette for that "Dark Room" feel */
+            /* Global Dark Background (Visible during game) */
             background-image: radial-gradient(circle at 50% 50%, #0b1629 0%, #000000 100%);
         }
 
@@ -51,14 +50,13 @@
             z-index: 10;
         }
 
-        /* --- OVERLAYS (Intro / Briefing) --- */
+        /* --- OVERLAYS --- */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -73,22 +71,34 @@
             pointer-events: none;
         }
 
+        /* --- TITLE SLIDE SPECIFIC (Restored Blue) --- */
+        #intro-screen {
+            /* Rich Presidential Blue Gradient */
+            background: radial-gradient(circle at 50% 40%, #003366 0%, #020817 100%);
+        }
+
+        /* Other overlays stay dark (Briefing/Finale) */
+        #briefing-screen, #finale-screen {
+            background: rgba(0, 0, 0, 0.95);
+        }
+
         /* Intro Typography */
         h1 {
             font-family: var(--font-serif);
             font-size: 3rem;
-            color: var(--pres-gold); /* Gold Title */
+            color: var(--pres-gold); 
             text-transform: uppercase;
             letter-spacing: 4px;
             border-bottom: 2px solid var(--pres-red);
             padding-bottom: 15px;
             margin-bottom: 30px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .subtitle {
             font-family: var(--font-mono);
             font-size: 1rem;
-            color: #888;
+            color: #ccc; /* Lighter text for blue bg */
             margin-bottom: 30px;
             letter-spacing: 2px;
         }
@@ -96,10 +106,10 @@
         input[type="text"] {
             padding: 15px;
             font-size: 1.2rem;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1); /* Slight white tint */
             border: 1px solid var(--pres-gold);
-            color: var(--pres-gold);
-            border-radius: 0px; /* Sharp corners */
+            color: white;
+            border-radius: 0px; 
             width: 80%;
             max-width: 350px;
             text-align: center;
@@ -110,11 +120,10 @@
         }
 
         input[type="text"]:focus {
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.1);
         }
 
-        /* Standard Button Style */
         .btn-start {
             margin-top: 30px;
             padding: 15px 40px;
@@ -129,14 +138,15 @@
             letter-spacing: 2px;
             cursor: pointer;
             transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .btn-start:hover {
             background-color: #d63030;
-            box-shadow: 0 0 15px rgba(178, 34, 34, 0.6);
+            transform: scale(1.05);
         }
 
-        /* --- BRIEFING SCREEN (Paper File Look) --- */
+        /* --- BRIEFING SCREEN --- */
         .briefing-card {
             background: #f0f0f0;
             color: #111;
@@ -171,7 +181,7 @@
             line-height: 1.6;
         }
 
-        /* --- GAME BOARD (The Overhaul) --- */
+        /* --- GAME BOARD --- */
         #game-board {
             width: 100%;
             max-width: 900px;
@@ -180,13 +190,11 @@
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s;
-            /* Thin tech border */
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
-            background: rgba(0, 0, 0, 0.3); /* Slight tint behind everything */
+            background: rgba(0, 0, 0, 0.3); 
         }
 
-        /* The Question Area */
         .question-container {
             width: 100%;
             text-align: center;
@@ -209,27 +217,26 @@
 
         .question-text {
             font-family: var(--font-serif);
-            font-size: 2.2rem; /* Large and Elegant */
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--off-white);
             line-height: 1.3;
             text-shadow: 0 4px 4px rgba(0,0,0,0.8);
         }
 
-        /* The Answers Grid */
         .answers-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2x2 Layout */
+            grid-template-columns: 1fr 1fr; 
             gap: 20px;
             width: 100%;
         }
 
         .answer-btn {
-            background: transparent; /* See-through */
-            border: 1px solid var(--pres-gold); /* Thin Gold Line */
-            border-radius: 2px; /* Slight round, mostly sharp */
+            background: transparent; 
+            border: 1px solid var(--pres-gold); 
+            border-radius: 2px; 
             padding: 25px;
-            font-family: var(--font-mono); /* Typewriter font */
+            font-family: var(--font-mono); 
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--pres-gold);
@@ -241,19 +248,16 @@
             overflow: hidden;
         }
 
-        /* Hover Effect: Subtle Gold Glow */
         .answer-btn:hover {
             background: rgba(212, 175, 55, 0.1);
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
             transform: translateY(-2px);
         }
 
-        /* Active/Click State */
         .answer-btn:active {
             transform: scale(0.98);
         }
 
-        /* Correct/Selected State: Solid Red */
         .correct-anim {
             background-color: var(--pres-red) !important;
             border-color: var(--pres-red) !important;
@@ -269,7 +273,6 @@
             color: #666;
         }
 
-        /* Next Button */
         #next-btn {
             margin-top: 40px;
             padding: 15px 40px;
@@ -293,6 +296,7 @@
             text-align: center;
             max-width: 700px;
             color: var(--off-white);
+            border-top: 5px solid var(--pres-red);
         }
 
         @keyframes pulseRed {
@@ -306,11 +310,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobile Tweaks */
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
             .question-text { font-size: 1.5rem; }
-            .answers-grid { grid-template-columns: 1fr; gap: 15px; } /* Stack on mobile */
+            .answers-grid { grid-template-columns: 1fr; gap: 15px; } 
             .answer-btn { padding: 20px; font-size: 1rem; }
             #game-board { padding: 20px; border: none; background: transparent; }
         }
@@ -351,7 +354,7 @@
                 </p>
             </div>
             <div style="text-align: center; margin-top: 20px;">
-                <button class="btn-start" onclick="enterSituationRoom()">ENTER SITUATION ROOM</button>
+                <button class="btn-start" style="background-color: var(--pres-navy);" onclick="enterSituationRoom()">ENTER SITUATION ROOM</button>
             </div>
         </div>
     </div>
@@ -486,7 +489,6 @@
             btns.forEach(btn => {
                 btn.classList.remove('dimmed', 'correct-anim');
                 btn.style.pointerEvents = "all";
-                // Reset Text content to options (remove checks/x)
             });
 
             // Load Content
@@ -509,7 +511,6 @@
                 btns.forEach((btn, idx) => {
                     if (idx === correctIndex) {
                         btn.classList.add('correct-anim');
-                        // Add checkmark without losing monospace look
                         btn.innerHTML = qText.innerText.includes("Loading") ? "CORRECT" : questions[currentQIndex].options[idx]; 
                     } else {
                         btn.classList.add('dimmed');
