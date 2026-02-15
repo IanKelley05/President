@@ -10,8 +10,8 @@
         /* --- RESET & VARIABLES --- */
         :root {
             --deep-navy: #050A14;
-            --pres-red: #B22222;  /* Deep Red */
-            --pres-gold: #D4AF37; /* Metallic Gold */
+            --pres-red: #B22222;  
+            --pres-gold: #D4AF37; 
             --off-white: #F8F8F8;
             
             --font-serif: 'Playfair Display', serif;
@@ -30,11 +30,11 @@
             height: 100%;
             width: 100%;
             font-family: var(--font-sans);
-            background-color: var(--deep-navy);
+            background-color: #003366; /* Fallback blue */
             color: var(--off-white);
             overflow: hidden;
-            /* Global Dark Background (Visible during game) */
-            background-image: radial-gradient(circle at 50% 50%, #0b1629 0%, #000000 100%);
+            /* Rich Presidential Blue Gradient - GLOBAL */
+            background-image: radial-gradient(circle at 50% 40%, #003366 0%, #020817 100%);
         }
 
         /* --- LAYOUT CONTAINERS --- */
@@ -64,22 +64,13 @@
             z-index: 200;
             transition: opacity 0.5s ease-out;
             text-align: center;
+            /* Slight dark tint to ensure text readability over the bright blue center */
+            background: rgba(2, 8, 23, 0.5);
         }
 
         .overlay.hidden {
             opacity: 0;
             pointer-events: none;
-        }
-
-        /* --- TITLE SLIDE SPECIFIC (Restored Blue) --- */
-        #intro-screen {
-            /* Rich Presidential Blue Gradient */
-            background: radial-gradient(circle at 50% 40%, #003366 0%, #020817 100%);
-        }
-
-        /* Other overlays stay dark (Briefing/Finale) */
-        #briefing-screen, #finale-screen {
-            background: rgba(0, 0, 0, 0.95);
         }
 
         /* Intro Typography */
@@ -98,7 +89,7 @@
         .subtitle {
             font-family: var(--font-mono);
             font-size: 1rem;
-            color: #ccc; /* Lighter text for blue bg */
+            color: #ddd; 
             margin-bottom: 30px;
             letter-spacing: 2px;
         }
@@ -106,7 +97,7 @@
         input[type="text"] {
             padding: 15px;
             font-size: 1.2rem;
-            background: rgba(255, 255, 255, 0.1); /* Slight white tint */
+            background: rgba(255, 255, 255, 0.1); 
             border: 1px solid var(--pres-gold);
             color: white;
             border-radius: 0px; 
@@ -121,7 +112,7 @@
 
         input[type="text"]:focus {
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(212, 175, 55, 0.15);
         }
 
         .btn-start {
@@ -153,7 +144,7 @@
             padding: 40px;
             max-width: 600px;
             width: 90%;
-            box-shadow: 0 0 50px rgba(0,0,0,1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
             position: relative;
             transform: rotate(-1deg);
             background-image: repeating-linear-gradient(#f0f0f0 0%, #f0f0f0 24px, #e0e0e0 25px);
@@ -190,9 +181,11 @@
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* Semi-transparent background so the blue shows through */
+            background: rgba(2, 8, 23, 0.6);
+            border: 1px solid var(--pres-gold);
             padding: 40px;
-            background: rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
         .question-container {
@@ -213,6 +206,7 @@
             padding: 4px 12px;
             margin-bottom: 20px;
             animation: pulseRed 3s infinite;
+            background: rgba(0,0,0,0.5);
         }
 
         .question-text {
@@ -232,7 +226,7 @@
         }
 
         .answer-btn {
-            background: transparent; 
+            background: rgba(2, 8, 23, 0.8); 
             border: 1px solid var(--pres-gold); 
             border-radius: 2px; 
             padding: 25px;
@@ -249,8 +243,8 @@
         }
 
         .answer-btn:hover {
-            background: rgba(212, 175, 55, 0.1);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
             transform: translateY(-2px);
         }
 
@@ -290,13 +284,15 @@
         
         /* --- FINALE --- */
         .finale-card {
-            background: linear-gradient(180deg, #0a1120 0%, #000 100%);
+            /* Semi-transparent background so the blue shows through */
+            background: rgba(2, 8, 23, 0.85);
             border: 1px solid var(--pres-gold);
             padding: 60px;
             text-align: center;
             max-width: 700px;
             color: var(--off-white);
             border-top: 5px solid var(--pres-red);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         @keyframes pulseRed {
@@ -489,6 +485,7 @@
             btns.forEach(btn => {
                 btn.classList.remove('dimmed', 'correct-anim');
                 btn.style.pointerEvents = "all";
+                // Reset Text content
             });
 
             // Load Content
