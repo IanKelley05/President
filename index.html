@@ -9,6 +9,7 @@
         :root {
             --navy: #002868;
             --red: #BF0A30;
+            --dark-red: #8a0a1e;
             --white: #ffffff;
             --gold: #C5B358;
             --screen-bg: #111;
@@ -274,19 +275,19 @@
             letter-spacing: 1px;
         }
 
-        /* --- FINALE STYLING UPDATED --- */
+        /* --- FINALE STYLING UPDATED (RED THEME) --- */
         #finale-content {
             max-width: 600px;
             padding: 40px;
-            /* Fancy official gradient */
-            background: linear-gradient(135deg, #002868 0%, #001f3f 100%);
-            /* Double gold border for official look */
-            border: 4px double var(--gold);
+            /* Bold Red Gradient to stand out against blue background */
+            background: linear-gradient(135deg, var(--red) 0%, var(--dark-red) 100%);
+            border: 4px solid var(--gold);
             border-radius: 15px;
-            /* Gold Glow */
-            box-shadow: 0 0 30px rgba(197, 179, 88, 0.4);
+            /* Strong Shadow */
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
             text-align: center;
             position: relative;
+            color: white;
         }
 
         .finale-msg {
@@ -294,16 +295,27 @@
             line-height: 1.6;
             margin-bottom: 30px;
         }
+
+        /* Special Yes Button styles for the red box */
+        #yes-btn {
+            background-color: var(--white);
+            color: var(--red);
+            border: 2px solid var(--gold);
+        }
         
-        /* Pulse animation for the YES button */
+        #yes-btn:hover {
+            background-color: var(--gold);
+            color: var(--white);
+        }
+        
         .pulse-btn {
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(191, 10, 48, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(191, 10, 48, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(191, 10, 48, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
 
         /* Canvas for confetti */
@@ -351,6 +363,7 @@
 
     <audio id="sfx-fanfare" src="fanfare.mp3"></audio>
     <audio id="sfx-music" src="background-music.mp3" loop></audio>
+    <audio id="sfx-celebration" src="celebration.mp3" loop></audio>
 
     <div class="bg-container"></div>
     
@@ -441,6 +454,7 @@
         // Audio
         const sfxFanfare = document.getElementById('sfx-fanfare');
         const sfxMusic = document.getElementById('sfx-music');
+        const sfxCelebration = document.getElementById('sfx-celebration');
 
         function checkNameAndStart() {
             const inputName = document.getElementById('name-input').value.trim();
@@ -526,6 +540,13 @@
         }
 
         function acceptProposal() {
+            // STOP background music
+            sfxMusic.pause();
+            
+            // PLAY Celebration music
+            sfxCelebration.volume = 1.0; 
+            sfxCelebration.play();
+
             startConfetti();
             
             // HIDE the yes button
