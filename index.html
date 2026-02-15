@@ -32,7 +32,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* CHECK YOUR FILE NAME ON GITHUB EXACTLY! CASE SENSITIVE! */
             background: url('bg.jpg') no-repeat center center fixed; 
             background-size: cover;
             filter: blur(8px); 
@@ -122,7 +121,7 @@
             position: absolute;
             top: 10%;
             right: 10%; 
-            width: 450px; /* Made slightly wider for options */
+            width: 450px; 
             height: 350px;
             background: #222;
             border: 10px solid #444;
@@ -224,6 +223,8 @@
             color: black;
             border: none;
             z-index: 10;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         @keyframes shake {
@@ -273,19 +274,36 @@
             letter-spacing: 1px;
         }
 
-        /* --- FINALE --- */
+        /* --- FINALE STYLING UPDATED --- */
         #finale-content {
             max-width: 600px;
-            padding: 20px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid var(--gold);
-            border-radius: 10px;
+            padding: 40px;
+            /* Fancy official gradient */
+            background: linear-gradient(135deg, #002868 0%, #001f3f 100%);
+            /* Double gold border for official look */
+            border: 4px double var(--gold);
+            border-radius: 15px;
+            /* Gold Glow */
+            box-shadow: 0 0 30px rgba(197, 179, 88, 0.4);
+            text-align: center;
+            position: relative;
         }
 
         .finale-msg {
             font-size: 1.5rem;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        /* Pulse animation for the YES button */
+        .pulse-btn {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(191, 10, 48, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(191, 10, 48, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(191, 10, 48, 0); }
         }
 
         /* Canvas for confetti */
@@ -343,7 +361,7 @@
         <p style="margin-bottom: 20px; font-style: italic;">Please identify yourself for the press.</p>
         <input type="text" id="name-input" placeholder="Enter name" autocomplete="off">
         <button onclick="checkNameAndStart()">Start Briefing</button>
-        <p id="error-msg" style="color: #ff4444; margin-top: 10px; display: none;">Access Denied. Identity verification failed.</p>
+        <p id="error-msg" style="color: #ff4444; margin-top: 15px; font-weight:bold; display: none;">ACCESS DENIED: IDENTITY NOT VERIFIED</p>
     </div>
 
     <div id="app-container">
@@ -357,7 +375,7 @@
         </div>
 
         <div id="podium-area" class="podium-container hidden">
-            <img src="https://via.placeholder.com/300x300/002868/FFFFFF?text=PODIUM+IMAGE" alt="Podium" class="podium-image" id="podium-img">
+            <img src="podium.png" alt="Podium" class="podium-image" id="podium-img">
             
             <div class="placard">
                 <div class="placard-text" id="placard-name">GUEST</div>
@@ -368,7 +386,7 @@
     <div id="finale-screen" class="overlay hidden">
         <div id="finale-content">
             <div class="finale-msg" id="finale-text"></div>
-            <button onclick="acceptProposal()">YES!</button>
+            <button onclick="acceptProposal()" class="pulse-btn" id="yes-btn">YES!</button>
         </div>
     </div>
 
@@ -416,6 +434,8 @@
         const placardName = document.getElementById('placard-name');
         const finaleScreen = document.getElementById('finale-screen');
         const finaleText = document.getElementById('finale-text');
+        const finaleContent = document.getElementById('finale-content');
+        const yesBtn = document.getElementById('yes-btn');
         const errorMsg = document.getElementById('error-msg');
         
         // Audio
@@ -428,25 +448,21 @@
             // SECURITY CHECK: Only Minali allowed (case insensitive)
             if (inputName.toLowerCase() !== "minali") {
                 errorMsg.style.display = 'block';
-                // Shake the input box
                 const input = document.getElementById('name-input');
                 input.style.border = "2px solid red";
                 setTimeout(() => { input.style.border = "2px solid var(--gold)"; }, 1000);
                 return;
             }
 
-            // If correct:
-            userName = inputName; // Keep the capitalization she typed (e.g., "Minali")
+            userName = inputName; 
             placardName.textContent = userName;
 
-            // Audio handling
             sfxFanfare.play().catch(e => console.log("Audio play failed (interaction needed):", e));
             sfxMusic.volume = 0.3;
             setTimeout(() => {
                 sfxMusic.play();
             }, 2000);
 
-            // UI Transition
             introScreen.classList.add('hidden');
             gameTv.classList.remove('hidden');
             podiumArea.classList.remove('hidden');
@@ -460,21 +476,17 @@
                 return;
             }
 
-            // Hide next button initially
             nextBtn.classList.add('hidden');
             
             const q = questions[currentQIndex];
             
-            // Generate HTML for TV
             let html = `<div class="question-text">${q.q}</div>`;
             html += `<div class="options-grid">`;
             q.options.forEach((opt, index) => {
-                // Pass the button itself (this) and the index
                 html += `<button class="option-btn" onclick="handleAnswer(this, ${index})">${opt}</button>`;
             });
             html += `</div>`;
 
-            // Fade effect
             tvContent.style.opacity = 0;
             setTimeout(() => {
                 tvContent.innerHTML = html;
@@ -487,20 +499,12 @@
             const correctIndex = questions[currentQIndex].a;
 
             if (selectedIndex === correctIndex) {
-                // CORRECT
                 btnElement.classList.add('btn-correct');
-                // Show Next Button
                 nextBtn.classList.remove('hidden');
-                
-                // Optional: Disable other buttons so she can't click them anymore
                 const allBtns = document.querySelectorAll('.option-btn');
                 allBtns.forEach(btn => btn.style.pointerEvents = 'none');
             } else {
-                // WRONG
                 btnElement.classList.add('btn-wrong');
-                // Remove the wrong class after animation (0.5s) so she can try again (if you want the red to disappear)
-                // Or leave it red to show what she already clicked:
-                // btnElement.style.pointerEvents = 'none'; // Optional: disable the wrong button
             }
         }
 
@@ -523,7 +527,17 @@
 
         function acceptProposal() {
             startConfetti();
-            alert("Happy Presidents Day! ❤️");
+            
+            // HIDE the yes button
+            yesBtn.style.display = 'none';
+
+            // REPLACE the text with the celebration message
+            finaleText.innerHTML = `
+                <h1 style="color: #C5B358; font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px #000;">
+                    YAY!!<br>HAPPY PRESIDENTS DAY!!
+                </h1>
+                <p style="font-size: 3rem; margin-top: 20px;">❤️ 🇺🇸 ❤️</p>
+            `;
         }
 
         /* --- CONFETTI ENGINE --- */
