@@ -2,18 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Presidential Trivia Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- CSS STYLES --- */
+        /* --- RESET & VARIABLES --- */
         :root {
-            --navy: #002868;
-            --red: #BF0A30;
-            --dark-red: #8a0a1e;
+            --kahoot-red: #e21b3c;
+            --kahoot-blue: #1368ce;
+            --kahoot-gold: #d89e00;
+            --kahoot-green: #26890c;
+            --navy-bg: #020817;
             --white: #ffffff;
-            --gold: #C5B358;
-            --screen-bg: #111;
-            --font-main: 'Georgia', 'Times New Roman', serif;
+            --font-stack: 'Poppins', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none; /* Prevents text highlighting */
         }
 
         body, html {
@@ -21,343 +28,273 @@
             padding: 0;
             height: 100%;
             width: 100%;
-            font-family: var(--font-main);
-            overflow: hidden; 
-            
-            /* --- THE CURTAIN BACKGROUND (Directly on Body) --- */
-            background-color: #002868; /* Fallback Blue */
-            
-            /* The Curtain Effect: Spotlight + Folds */
-            background-image: 
-                radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.6) 90%),
-                repeating-linear-gradient(
-                    90deg,
-                    #00102a 0px,      /* Deep Shadow */
-                    #002868 40px,     /* Main Navy */
-                    #0040a0 80px,     /* Highlight Fold */
-                    #002868 120px,    /* Main Navy */
-                    #00102a 160px     /* Deep Shadow */
-                );
+            font-family: var(--font-stack);
+            background-color: var(--navy-bg);
+            overflow: hidden;
+            /* Cool Radial Background */
+            background-image: radial-gradient(circle at 50% 50%, #0a1f4d 0%, #020817 100%);
         }
 
-        /* REMOVED .bg-container entirely to prevent layering issues */
-
-        /* Layout Container */
+        /* --- LAYOUT CONTAINERS --- */
         #app-container {
-            position: relative;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: space-between; /* Spreads items out */
             align-items: center;
-            justify-content: flex-end; 
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
 
-        /* --- UI OVERLAYS (Intro / Finale) --- */
+        /* --- INTRO SCREEN (Big & Modern) --- */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* Make this slightly transparent so we can see the curtain behind it */
-            background: rgba(0, 20, 50, 0.9); 
+            background: rgba(2, 8, 23, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            color: var(--white);
-            text-align: center;
-            transition: opacity 0.5s;
+            z-index: 200;
+            transition: opacity 0.4s ease-out;
         }
 
-        .hidden {
+        .overlay.hidden {
             opacity: 0;
             pointer-events: none;
-            display: none !important;
+        }
+
+        .title-box {
+            background: var(--white);
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            transform: rotate(-2deg);
+            animation: float 3s infinite ease-in-out;
         }
 
         h1 {
-            font-size: 2.5rem;
+            margin: 0;
+            font-size: 3rem;
+            color: var(--navy-bg);
             text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px solid var(--red);
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px black;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1;
         }
 
         input[type="text"] {
-            padding: 15px;
-            font-size: 1.2rem;
-            border: 2px solid var(--gold);
-            border-radius: 5px;
-            font-family: var(--font-main);
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background-color: var(--red);
-            color: var(--white);
-            border: 2px solid var(--white);
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: var(--font-main);
-            text-transform: uppercase;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            background-color: #a00020;
-        }
-
-        /* --- THE TV SCREEN --- */
-        .tv-container {
-            position: absolute;
-            top: 10%;
-            right: 10%; 
-            width: 450px; 
-            height: 350px;
-            background: #222;
-            border: 10px solid #444;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
-            z-index: 50;
-            transform: rotate(-2deg); 
+            font-size: 1.5rem;
+            border: 4px solid #ccc;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            font-family: var(--font-stack);
+            font-weight: bold;
+            outline: none;
+            transition: border 0.2s;
         }
 
-        .tv-screen {
-            width: 100%;
-            height: 100%;
-            background: var(--screen-bg);
-            border: 2px solid #555;
-            border-radius: 4px;
+        input[type="text"]:focus {
+            border-color: var(--kahoot-blue);
+        }
+
+        .btn-start {
+            margin-top: 20px;
+            padding: 20px 60px;
+            font-size: 1.8rem;
+            background-color: var(--kahoot-blue);
             color: white;
-            font-family: 'Courier New', Courier, monospace; 
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #0b4a99; /* 3D effect */
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-start:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #0b4a99;
+        }
+
+        /* --- GAME BOARD --- */
+        #game-board {
+            width: 100%;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
-            padding: 10px;
+            flex-grow: 1; /* Takes up available space */
+            margin-top: 20px;
+            transition: opacity 0.5s;
         }
 
-        /* Scanline effect */
-        .tv-screen::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
+        /* Question Box */
+        .question-card {
+            background: var(--white);
+            width: 100%;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         .question-text {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            animation: fadeIn 1s ease-in;
-            z-index: 3;
-            width: 100%;
+            font-size: 1.8rem; /* BIG TEXT */
+            font-weight: 700;
+            color: #333;
         }
 
-        .options-grid {
+        /* Answer Grid */
+        .answers-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
             width: 100%;
-            z-index: 3;
+            height: 100%;
+            max-height: 400px; /* Limit height so podium fits */
         }
 
-        .option-btn {
-            background: #333;
-            border: 1px solid #777;
+        .answer-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: white;
-            padding: 10px;
-            font-size: 0.9rem;
             cursor: pointer;
-            margin: 0; 
-            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center text */
+            text-align: center;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            transition: transform 0.1s, opacity 0.3s;
+            position: relative;
+        }
+
+        /* Kahoot Colors */
+        .btn-red { background-color: var(--kahoot-red); }
+        .btn-blue { background-color: var(--kahoot-blue); }
+        .btn-gold { background-color: var(--kahoot-gold); }
+        .btn-green { background-color: var(--kahoot-green); }
+
+        .answer-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        /* Feedback States */
+        .dimmed { opacity: 0.3; pointer-events: none; }
+        .correct-anim { transform: scale(1.05); box-shadow: 0 0 30px white; z-index: 10; }
+        
+        /* Next Button (Floats over game) */
+        #next-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 2rem;
+            background: white;
+            color: black;
+            border: 4px solid black;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 10px 10px 0 black;
+            z-index: 100;
+            display: none;
         }
         
-        .option-btn:hover {
-            background: var(--navy);
-            border-color: var(--white);
+        #next-btn:active {
+            transform: translate(-50%, -45%);
+            box-shadow: 5px 5px 0 black;
         }
 
-        /* Feedback Colors */
-        .btn-correct {
-            background-color: #28a745 !important; /* Green */
-            border-color: #28a745 !important;
-            pointer-events: none; /* Lock button */
-        }
-
-        .btn-wrong {
-            background-color: #dc3545 !important; /* Red */
-            border-color: #dc3545 !important;
-            animation: shake 0.5s;
-        }
-
-        /* Next Button inside TV */
-        #next-q-btn {
-            margin-top: 15px;
-            padding: 5px 20px;
-            font-size: 1rem;
-            background-color: var(--gold);
-            color: black;
-            border: none;
-            z-index: 10;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
-
-        /* --- THE PODIUM --- */
-        .podium-container {
+        /* --- PODIUM (Bottom) --- */
+        .podium-wrapper {
             position: relative;
-            bottom: -20px; 
-            width: 300px;
-            z-index: 60;
+            margin-top: auto; /* Push to bottom */
+            z-index: 50;
             display: flex;
             justify-content: center;
+            width: 100%;
         }
 
-        .podium-image {
-            width: 100%;
-            height: auto;
-            max-height: 400px;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+        .podium-img {
+            width: 250px; /* Bigger podium */
+            max-width: 80vw;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
         }
 
         .placard {
             position: absolute;
-            top: 40px; 
+            top: 55px; /* Adjust based on image */
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(to bottom, #cfc09f 5%, #ffecb3 100%);
+            background: linear-gradient(to right, #cfc09f, #ffecb3, #cfc09f);
+            padding: 8px 20px;
             border: 2px solid #8a6e2f;
-            padding: 5px 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            min-width: 120px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
             text-align: center;
-            border-radius: 2px;
+            min-width: 140px;
         }
 
         .placard-text {
-            color: black;
-            font-weight: bold;
             font-family: 'Times New Roman', serif;
-            font-size: 1.2rem;
+            font-weight: bold;
+            font-size: 1.3rem;
             text-transform: uppercase;
+            color: black;
             letter-spacing: 1px;
         }
 
-        /* --- FINALE STYLING (RED THEME) --- */
-        #finale-content {
-            max-width: 600px;
+        /* --- FINALE --- */
+        .finale-card {
+            background: white;
+            border-radius: 20px;
             padding: 40px;
-            background: linear-gradient(135deg, var(--red) 0%, var(--dark-red) 100%);
-            border: 4px solid var(--gold);
-            border-radius: 15px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
             text-align: center;
-            position: relative;
-            color: white;
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: popIn 0.5s ease-out;
+            border: 5px solid var(--kahoot-blue);
         }
 
-        .finale-msg {
-            font-size: 1.5rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        /* Special Yes Button styles */
-        #yes-btn {
-            background-color: var(--white);
-            color: var(--red);
-            border: 2px solid var(--gold);
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
-        #yes-btn:hover {
-            background-color: var(--gold);
-            color: var(--white);
-        }
-        
-        .pulse-btn {
-            animation: pulse 2s infinite;
+        @keyframes float {
+            0% { transform: rotate(-2deg) translateY(0px); }
+            50% { transform: rotate(-2deg) translateY(-10px); }
+            100% { transform: rotate(-2deg) translateY(0px); }
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-        }
-
-        /* Canvas for confetti */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 200;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-            .tv-container {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin-top: 50px;
-                width: 90%;
-                height: auto;
-                min-height: 250px;
-                transform: rotate(0deg);
-                margin-bottom: 20px;
-            }
-
-            .podium-container {
-                width: 200px;
-            }
-            
-            .placard {
-                top: 25px; 
-                font-size: 0.9rem;
-            }
+        /* Mobile Tweaks */
+        @media (max-width: 600px) {
+            .question-text { font-size: 1.3rem; }
+            .answers-grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr); gap: 10px; }
+            .answer-btn { padding: 15px; font-size: 1.1rem; height: 70px; }
+            .podium-img { width: 180px; }
+            .placard { top: 40px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -366,46 +303,59 @@
     <audio id="sfx-fanfare" src="fanfare.mp3"></audio>
     <audio id="sfx-music" src="background-music.mp3" loop></audio>
     <audio id="sfx-celebration" src="celebration.mp3" loop></audio>
-
-    <canvas id="confetti-canvas"></canvas>
+    <canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999;"></canvas>
 
     <div id="intro-screen" class="overlay">
-        <h1>Presidential Briefing</h1>
-        <p style="margin-bottom: 20px; font-style: italic;">Please identify yourself for the press.</p>
-        <input type="text" id="name-input" placeholder="Enter name" autocomplete="off">
-        <button onclick="checkNameAndStart()">Start Briefing</button>
-        <p id="error-msg" style="color: #ff4444; margin-top: 15px; font-weight:bold; display: none;">ACCESS DENIED: IDENTITY NOT VERIFIED</p>
+        <div class="title-box">
+            <h1>Presidential<br>Trivia</h1>
+        </div>
+        <input type="text" id="name-input" placeholder="Enter Game PIN..." value="" style="display:none;"> <input type="text" id="real-name-input" placeholder="Enter Name" autocomplete="off">
+        <button class="btn-start" onclick="checkNameAndStart()">JOIN GAME</button>
+        <p id="error-msg" style="color: #ff4444; margin-top: 20px; font-weight:900; font-size: 1.2rem; display: none;">ACCESS DENIED: IDENTITY UNVERIFIED</p>
     </div>
 
-    <div id="app-container">
+    <div id="app-container" style="display:none;">
         
-        <div id="game-tv" class="tv-container hidden">
-            <div class="tv-screen">
-                <div id="tv-content">
-                    </div>
-                <button id="next-q-btn" class="hidden" onclick="nextQuestion()">NEXT QUESTION</button>
+        <div id="game-board">
+            <div class="question-card">
+                <div class="question-text" id="q-text">Loading...</div>
             </div>
+
+            <div class="answers-grid">
+                <button class="answer-btn btn-red" id="btn-0" onclick="handleAnswer(0)">A</button>
+                <button class="answer-btn btn-blue" id="btn-1" onclick="handleAnswer(1)">B</button>
+                <button class="answer-btn btn-gold" id="btn-2" onclick="handleAnswer(2)">C</button>
+                <button class="answer-btn btn-green" id="btn-3" onclick="handleAnswer(3)">D</button>
+            </div>
+            
+            <button id="next-btn" onclick="nextQuestion()">NEXT ></button>
         </div>
 
-        <div id="podium-area" class="podium-container hidden">
-            <img src="https://iankelley05.github.io/President/podium.png" alt="Podium" class="podium-image" id="podium-img">
-            
+        <div class="podium-wrapper">
+            <img src="https://iankelley05.github.io/President/podium.png" class="podium-img" alt="Podium">
             <div class="placard">
                 <div class="placard-text" id="placard-name">GUEST</div>
             </div>
         </div>
+
     </div>
 
     <div id="finale-screen" class="overlay hidden">
-        <div id="finale-content">
-            <div class="finale-msg" id="finale-text"></div>
-            <button onclick="acceptProposal()" class="pulse-btn" id="yes-btn">YES!</button>
+        <div class="finale-card">
+            <h1 style="color: var(--kahoot-blue); font-size: 2.5rem; margin-bottom: 20px;">QUIZ COMPLETE!</h1>
+            <p style="font-size: 1.5rem; line-height: 1.5; color: #555; margin-bottom: 30px;">
+                Wow, you scored perfectly! Someone is fit to be President...<br><br>
+                <strong>But I have one last question for you:</strong>
+            </p>
+            <h2 id="proposal-text" style="color: var(--kahoot-red); font-size: 2rem; margin-bottom: 30px;">
+                Minali, will you be my President for Presidents Day?
+            </h2>
+            <button class="btn-start" id="yes-btn" onclick="acceptProposal()" style="background-color: var(--kahoot-green);">YES!</button>
         </div>
     </div>
 
     <script>
-        /* --- JAVASCRIPT LOGIC --- */
-
+        // --- GAME DATA ---
         const questions = [
             {
                 q: "Who was the only U.S. President to serve more than two terms?",
@@ -437,84 +387,102 @@
         let currentQIndex = 0;
         let userName = "";
 
+        // Elements
         const introScreen = document.getElementById('intro-screen');
-        const gameTv = document.getElementById('game-tv');
-        const podiumArea = document.getElementById('podium-area');
-        const tvContent = document.getElementById('tv-content');
-        const nextBtn = document.getElementById('next-q-btn');
-        const placardName = document.getElementById('placard-name');
-        const finaleScreen = document.getElementById('finale-screen');
-        const finaleText = document.getElementById('finale-text');
-        const yesBtn = document.getElementById('yes-btn');
+        const appContainer = document.getElementById('app-container');
         const errorMsg = document.getElementById('error-msg');
+        const qText = document.getElementById('q-text');
+        const nextBtn = document.getElementById('next-btn');
+        const placardName = document.getElementById('placard-name');
         
         const sfxFanfare = document.getElementById('sfx-fanfare');
         const sfxMusic = document.getElementById('sfx-music');
         const sfxCelebration = document.getElementById('sfx-celebration');
 
         function checkNameAndStart() {
-            const inputName = document.getElementById('name-input').value.trim();
-            
-            // SECURITY CHECK
-            if (inputName.toLowerCase() !== "minali") {
+            const input = document.getElementById('real-name-input');
+            const name = input.value.trim();
+
+            if (name.toLowerCase() !== "minali") {
                 errorMsg.style.display = 'block';
-                const input = document.getElementById('name-input');
-                input.style.border = "2px solid red";
-                setTimeout(() => { input.style.border = "2px solid var(--gold)"; }, 1000);
+                input.style.borderColor = "red";
+                // Shake effect
+                input.style.transform = "translateX(5px)";
+                setTimeout(() => input.style.transform = "translateX(0)", 100);
+                setTimeout(() => input.style.transform = "translateX(-5px)", 200);
+                setTimeout(() => input.style.transform = "translateX(0)", 300);
                 return;
             }
 
-            userName = inputName; 
+            userName = name;
             placardName.textContent = userName;
+            
+            // Start Audio
+            sfxFanfare.play().catch(e => console.log("Audio needed interaction"));
+            sfxMusic.volume = 0.2;
+            setTimeout(() => sfxMusic.play(), 2000);
 
-            sfxFanfare.play().catch(e => console.log("Audio play failed (interaction needed):", e));
-            sfxMusic.volume = 0.3;
-            setTimeout(() => {
-                sfxMusic.play();
-            }, 2000);
-
+            // Transitions
             introScreen.classList.add('hidden');
-            gameTv.classList.remove('hidden');
-            podiumArea.classList.remove('hidden');
-
+            appContainer.style.display = 'flex';
+            
             loadQuestion();
         }
 
         function loadQuestion() {
             if (currentQIndex >= questions.length) {
-                triggerFinale();
+                showFinale();
                 return;
             }
 
-            nextBtn.classList.add('hidden');
-            
-            const q = questions[currentQIndex];
-            
-            let html = `<div class="question-text">${q.q}</div>`;
-            html += `<div class="options-grid">`;
-            q.options.forEach((opt, index) => {
-                html += `<button class="option-btn" onclick="handleAnswer(this, ${index})">${opt}</button>`;
+            // Reset UI
+            nextBtn.style.display = 'none';
+            const btns = document.querySelectorAll('.answer-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('dimmed', 'correct-anim');
+                btn.style.backgroundColor = ""; // Reset inline colors
+                btn.style.pointerEvents = "all";
             });
-            html += `</div>`;
 
-            tvContent.style.opacity = 0;
-            setTimeout(() => {
-                tvContent.innerHTML = html;
-                tvContent.style.transition = "opacity 0.5s";
-                tvContent.style.opacity = 1;
-            }, 200);
+            // Load Content
+            const q = questions[currentQIndex];
+            qText.textContent = q.q;
+            
+            // Set Text for Buttons
+            document.getElementById('btn-0').textContent = q.options[0];
+            document.getElementById('btn-1').textContent = q.options[1];
+            document.getElementById('btn-2').textContent = q.options[2];
+            document.getElementById('btn-3').textContent = q.options[3];
         }
 
-        function handleAnswer(btnElement, selectedIndex) {
+        function handleAnswer(choiceIndex) {
             const correctIndex = questions[currentQIndex].a;
+            const btns = document.querySelectorAll('.answer-btn');
 
-            if (selectedIndex === correctIndex) {
-                btnElement.classList.add('btn-correct');
-                nextBtn.classList.remove('hidden');
-                const allBtns = document.querySelectorAll('.option-btn');
-                allBtns.forEach(btn => btn.style.pointerEvents = 'none');
+            if (choiceIndex === correctIndex) {
+                // CORRECT
+                btns.forEach((btn, idx) => {
+                    if (idx === correctIndex) {
+                        btn.classList.add('correct-anim');
+                        btn.textContent = "CORRECT!";
+                    } else {
+                        btn.classList.add('dimmed');
+                    }
+                });
+                
+                // Show Next Button
+                nextBtn.style.display = 'block';
+
             } else {
-                btnElement.classList.add('btn-wrong');
+                // WRONG - Shake the button
+                const wrongBtn = document.getElementById('btn-' + choiceIndex);
+                wrongBtn.style.backgroundColor = "#555"; // Grey out wrong answer
+                wrongBtn.textContent = "X";
+                
+                // Shake
+                wrongBtn.style.transform = "translateX(5px)";
+                setTimeout(() => wrongBtn.style.transform = "translateX(-5px)", 100);
+                setTimeout(() => wrongBtn.style.transform = "translateX(0)", 200);
             }
         }
 
@@ -523,36 +491,27 @@
             loadQuestion();
         }
 
-        function triggerFinale() {
-            gameTv.classList.add('hidden');
-            podiumArea.classList.add('hidden'); 
-            finaleScreen.classList.remove('hidden');
-
-            const message = `Wow, you were so amazing! Someone fit to be President someday...<br><br>
-            But for now, I have to ask:<br><br>
-            <strong>${userName}, will you be my President for Presidents Day?</strong>`;
-            
-            finaleText.innerHTML = message;
+        function showFinale() {
+            appContainer.style.opacity = '0';
+            setTimeout(() => {
+                appContainer.style.display = 'none';
+                document.getElementById('finale-screen').classList.remove('hidden');
+            }, 500);
         }
 
         function acceptProposal() {
             sfxMusic.pause();
-            sfxCelebration.volume = 1.0; 
+            sfxCelebration.currentTime = 0;
             sfxCelebration.play();
-
-            startConfetti();
             
-            yesBtn.style.display = 'none';
-
-            finaleText.innerHTML = `
-                <h1 style="color: #C5B358; font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px #000;">
-                    YAY!!<br>HAPPY PRESIDENTS DAY!!
-                </h1>
-                <p style="font-size: 3rem; margin-top: 20px;">❤️ 🇺🇸 ❤️</p>
-            `;
+            startConfetti();
+            document.getElementById('yes-btn').style.display = 'none';
+            
+            document.getElementById('proposal-text').innerHTML = 
+                "YAY! HAPPY PRESIDENTS DAY! <br> ❤️ 🇺🇸 ❤️";
         }
 
-        /* --- CONFETTI ENGINE --- */
+        /* --- CONFETTI (Standard) --- */
         const canvas = document.getElementById("confetti-canvas");
         const ctx = canvas.getContext("2d");
         let cx = window.innerWidth;
@@ -566,20 +525,18 @@
         const terminalVelocity = 5;
         const drag = 0.075;
         const colors = [
-        { front : '#BF0A30', back: '#7c0a22' }, 
-        { front : '#002868', back: '#001942' }, 
-        { front : '#FFFFFF', back: '#dcdcdc' }, 
-        { front : '#C5B358', back: '#8c7e3b' } 
+            { front : '#e21b3c', back: '#a3001a' },
+            { front : '#1368ce', back: '#0a4085' },
+            { front : '#d89e00', back: '#946c00' },
+            { front : '#26890c', back: '#154f06' }
         ];
 
-        resizeCanvas = () => {
+        window.addEventListener('resize', () => {
             cx = window.innerWidth;
             cy = window.innerHeight;
             canvas.width = cx;
             canvas.height = cy;
-        }
-
-        window.addEventListener('resize', resizeCanvas);
+        });
 
         randomRange = (min, max) => Math.random() * (max - min) + min;
 
@@ -598,7 +555,6 @@
 
         render = () => {  
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             confetti.forEach((confetto, index) => {
                 const width = (confetto.dimensions.x * confetto.scale.x);
                 const height = (confetto.dimensions.y * confetto.scale.y);
@@ -610,19 +566,16 @@
                 confetto.velocity.x = Math.abs(confetto.velocity.x) > 0.1 ? confetto.velocity.x : 0; 
                 confetto.scale.y = Math.cos(confetto.position.y * 0.1);
                 ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
-                
                 ctx.save();
                 ctx.translate(confetto.position.x, confetto.position.y);
                 ctx.rotate(confetto.rotation);
                 ctx.fillRect(-width / 2, -height / 2, width, height);
                 ctx.restore();
-                
                 if (confetto.position.y >= canvas.height) {
                     confetti[index].position.y = -10;
                     confetti[index].velocity.y = randomRange(0, -10); 
                 }
             });
-
             window.requestAnimationFrame(render);
         }
 
