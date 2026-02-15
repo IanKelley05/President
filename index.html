@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presidential Trivia Challenge</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --navy: #002868;
+            --red: #BF0A30;
+            --white: #ffffff;
+            --gold: #C5B358;
+            --screen-bg: #111;
+            --font-main: 'Georgia', 'Times New Roman', serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: var(--font-main);
+            overflow: hidden; /* Prevent scroll */
+            background-color: #333;
+        }
+
+        /* Background Handling */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* PLACEHOLDER: Swap 'bg.jpg' with your Briefing Room image */
+            background: url('bg.jpg') no-repeat center center fixed; 
+            background-size: cover;
+            filter: blur(8px); /* The requested blur effect */
+            z-index: -1;
+            transform: scale(1.1); /* Prevents white edges from blur */
+        }
+
+        /* Layout Container */
+        #app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* Push podium to bottom */
+        }
+
+        /* --- UI OVERLAYS (Intro / Finale) --- */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 40, 104, 0.85); /* Navy transparent overlay */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: var(--white);
+            text-align: center;
+            transition: opacity 0.5s;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--red);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px black;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid var(--gold);
+            border-radius: 5px;
+            font-family: var(--font-main);
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background-color: var(--red);
+            color: var(--white);
+            border: 2px solid var(--white);
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: #a00020;
+        }
+
+        /* --- THE TV SCREEN --- */
+        .tv-container {
+            position: absolute;
+            top: 10%;
+            right: 10%; /* Place to the side */
+            width: 400px;
+            height: 300px;
+            background: #222;
+            border: 10px solid #444;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 50;
+            transform: rotate(-2deg); /* Slight tilt for realism */
+        }
+
+        .tv-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--screen-bg);
+            border: 2px solid #555;
+            border-radius: 4px;
+            color: #0f0; /* Retro green terminal text, or use white for modern */
+            color: white;
+            font-family: 'Courier New', Courier, monospace; /* TV font */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+        }
+
+        /* Scanline effect */
+        .tv-screen::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-in;
+            z-index: 3;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            z-index: 3;
+        }
+
+        .option-btn {
+            background: #333;
+            border: 1px solid #777;
+            color: white;
+            padding: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin: 0; /* Reset global button margin */
+        }
+        
+        .option-btn:hover {
+            background: var(--navy);
+            border-color: var(--white);
+        }
+
+        /* --- THE PODIUM --- */
+        .podium-container {
+            position: relative;
+            bottom: -20px; /* Slight offset */
+            width: 300px;
+            z-index: 60;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Styling a CSS-only Podium in case image is missing, 
+           but intended to wrap an image */
+        .podium-image {
+            width: 100%;
+            height: auto;
+            /* Drop shadow for depth */
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+        }
+
+        .placard {
+            position: absolute;
+            top: 40px; /* Adjust based on your podium image */
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to bottom, #cfc09f 5%, #ffecb3 100%);
+            border: 2px solid #8a6e2f;
+            padding: 5px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            min-width: 120px;
+            text-align: center;
+            border-radius: 2px;
+        }
+
+        .placard-text {
+            color: black;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- FINALE --- */
+        #finale-content {
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+        }
+
+        .finale-msg {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Canvas for confetti */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .tv-container {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 50px;
+                width: 90%;
+                height: 250px;
+                transform: rotate(0deg);
+                margin-bottom: 20px;
+            }
+
+            .podium-container {
+                width: 200px;
+            }
+            
+            .placard {
+                top: 25px; /* Adjust for smaller podium */
+                font-size: 0.9rem;
+            }
+
+            #app-container {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="sfx-fanfare" src="fanfare.mp3"></audio>
+    <audio id="sfx-music" src="background-music.mp3" loop></audio>
+
+    <div class="bg-container"></div>
+    
+    <canvas id="confetti-canvas"></canvas>
+
+    <div id="intro-screen" class="overlay">
+        <h1>Presidential Briefing</h1>
+        <p style="margin-bottom: 20px; font-style: italic;">Please identify yourself for the press.</p>
+        <input type="text" id="name-input" placeholder="Enter your name" autocomplete="off">
+        <button onclick="startGame()">Start Briefing</button>
+    </div>
+
+    <div id="app-container">
+        
+        <div id="game-tv" class="tv-container hidden">
+            <div class="tv-screen">
+                <div id="tv-content">
+                    </div>
+            </div>
+        </div>
+
+        <div id="podium-area" class="podium-container hidden">
+            <img src="https://via.placeholder.com/300x300/002868/FFFFFF?text=PODIUM+IMAGE" alt="Podium" class="podium-image" id="podium-img">
+            
+            <div class="placard">
+                <div class="placard-text" id="placard-name">GUEST</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="finale-screen" class="overlay hidden">
+        <div id="finale-content">
+            <div class="finale-msg" id="finale-text"></div>
+            <button onclick="acceptProposal()">YES!</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+
+        // Game State
+        const questions = [
+            {
+                q: "Who was the only U.S. President to serve more than two terms?",
+                options: ["G. Washington", "F. D. Roosevelt", "U. S. Grant", "T. Roosevelt"],
+                a: 1 // Index of correct answer
+            },
+            {
+                q: "Which President is known for the 'Gettysburg Address'?",
+                options: ["A. Lincoln", "T. Jefferson", "J. F. Kennedy", "R. Reagan"],
+                a: 0
+            },
+            {
+                q: "Who was the first President to live in the White House?",
+                options: ["G. Washington", "J. Adams", "A. Jackson", "J. Madison"],
+                a: 1
+            },
+            {
+                q: "Which President appears on the $1 bill?",
+                options: ["B. Franklin", "A. Hamilton", "G. Washington", "A. Lincoln"],
+                a: 2
+            },
+            {
+                q: "At 43, who was the youngest elected President?",
+                options: ["B. Obama", "B. Clinton", "J. F. Kennedy", "T. Roosevelt"],
+                a: 2
+            }
+        ];
+
+        let currentQIndex = 0;
+        let userName = "";
+
+        // DOM Elements
+        const introScreen = document.getElementById('intro-screen');
+        const gameTv = document.getElementById('game-tv');
+        const podiumArea = document.getElementById('podium-area');
+        const tvContent = document.getElementById('tv-content');
+        const placardName = document.getElementById('placard-name');
+        const finaleScreen = document.getElementById('finale-screen');
+        const finaleText = document.getElementById('finale-text');
+        
+        // Audio
+        const sfxFanfare = document.getElementById('sfx-fanfare');
+        const sfxMusic = document.getElementById('sfx-music');
+
+        function startGame() {
+            const inputName = document.getElementById('name-input').value.trim();
+            if (!inputName) {
+                alert("Please enter your name, Madam President!");
+                return;
+            }
+            userName = inputName;
+            placardName.textContent = userName;
+
+            // Audio handling
+            sfxFanfare.play().catch(e => console.log("Audio play failed (interaction needed):", e));
+            sfxMusic.volume = 0.3;
+            // Delay background music slightly so fanfare hits first
+            setTimeout(() => {
+                sfxMusic.play();
+            }, 2000);
+
+            // UI Transition
+            introScreen.classList.add('hidden');
+            gameTv.classList.remove('hidden');
+            podiumArea.classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQIndex >= questions.length) {
+                triggerFinale();
+                return;
+            }
+
+            const q = questions[currentQIndex];
+            
+            // Generate HTML for TV
+            let html = `<div class="question-text">${q.q}</div>`;
+            html += `<div class="options-grid">`;
+            q.options.forEach((opt, index) => {
+                html += `<button class="option-btn" onclick="handleAnswer(${index})">${opt}</button>`;
+            });
+            html += `</div>`;
+
+            // Fade effect: Clear content, trigger reflow, add content
+            tvContent.style.opacity = 0;
+            setTimeout(() => {
+                tvContent.innerHTML = html;
+                tvContent.style.transition = "opacity 0.5s";
+                tvContent.style.opacity = 1;
+            }, 200);
+        }
+
+        function handleAnswer(selectedIndex) {
+            // Logic: You can add scoring here if you want.
+            // For now, we just move to the next question regardless of answer
+            // to keep the flow positive for the surprise.
+            
+            // Optional: visual feedback on button click could go here
+            
+            currentQIndex++;
+            setTimeout(loadQuestion, 500);
+        }
+
+        function triggerFinale() {
+            gameTv.classList.add('hidden');
+            podiumArea.classList.add('hidden'); // Hide podium for full focus on message
+            finaleScreen.classList.remove('hidden');
+
+            const message = `Wow, you were so amazing! Someone fit to be President someday...<br><br>
+            But for now, I have to ask:<br><br>
+            <strong>${userName}, will you be my President for Presidents Day?</strong>`;
+            
+            finaleText.innerHTML = message;
+        }
+
+        function acceptProposal() {
+            // Trigger Confetti
+            startConfetti();
+            alert("Happy Presidents Day! ❤️");
+        }
+
+
+        /* --- SIMPLE CONFETTI ENGINE (Vanilla JS) --- */
+        const canvas = document.getElementById("confetti-canvas");
+        const ctx = canvas.getContext("2d");
+        let cx = window.innerWidth;
+        let cy = window.innerHeight;
+        canvas.width = cx;
+        canvas.height = cy;
+
+        let confetti = [];
+        const confettiCount = 300;
+        const gravity = 0.5;
+        const terminalVelocity = 5;
+        const drag = 0.075;
+        const colors = [
+        { front : '#BF0A30', back: '#7c0a22' }, // Red
+        { front : '#002868', back: '#001942' }, // Blue
+        { front : '#FFFFFF', back: '#dcdcdc' }, // White
+        { front : '#C5B358', back: '#8c7e3b' }  // Gold
+        ];
+
+        resizeCanvas = () => {
+            cx = window.innerWidth;
+            cy = window.innerHeight;
+            canvas.width = cx;
+            canvas.height = cy;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        randomRange = (min, max) => Math.random() * (max - min) + min;
+
+        initConfetti = () => {
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    color: colors[Math.floor(randomRange(0, colors.length))],
+                    dimensions: { x: randomRange(10, 20), y: randomRange(10, 30) },
+                    position: { x: randomRange(0, canvas.width), y: canvas.height - 1 },
+                    rotation: randomRange(0, 2 * Math.PI),
+                    scale: { x: 1, y: 1 },
+                    velocity: { x: randomRange(-25, 25), y: randomRange(0, -50) }
+                });
+            }
+        }
+
+        render = () => {  
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            confetti.forEach((confetto, index) => {
+                const width = (confetto.dimensions.x * confetto.scale.x);
+                const height = (confetto.dimensions.y * confetto.scale.y);
+                
+                // Move
+                confetto.position.x += confetto.velocity.x;
+                confetto.position.y += confetto.velocity.y;
+                
+                // Physics
+                confetto.velocity.y += gravity;
+                confetto.velocity.x += confetto.velocity.x > 0 ? -drag : drag;
+                
+                // Terminal Velocity
+                confetto.velocity.y = Math.min(confetto.velocity.y, terminalVelocity);
+                confetto.velocity.x = Math.abs(confetto.velocity.x) > 0.1 ? confetto.velocity.x : 0; // stop small slide
+                
+                // Rotation
+                confetto.scale.y = Math.cos(confetto.position.y * 0.1);
+                ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+                
+                // Draw
+                ctx.save();
+                ctx.translate(confetto.position.x, confetto.position.y);
+                ctx.rotate(confetto.rotation);
+                ctx.fillRect(-width / 2, -height / 2, width, height);
+                ctx.restore();
+                
+                // Reset if off screen
+                if (confetto.position.y >= canvas.height) {
+                    confetti[index].position.y = -10;
+                    confetti[index].velocity.y = randomRange(0, -10); // less pop on recycle
+                }
+            });
+
+            window.requestAnimationFrame(render);
+        }
+
+        function startConfetti() {
+            initConfetti();
+            render();
+        }
+    </script>
+</body>
+</html>
