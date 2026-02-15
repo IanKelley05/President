@@ -262,8 +262,7 @@
         .dimmed {
             opacity: 0.3;
             pointer-events: none;
-            border-color: #444;
-            color: #666;
+            /* No predefined border color here to allow JS override/reset */
         }
 
         #next-btn {
@@ -473,9 +472,15 @@
 
             nextBtn.style.display = 'none';
             const btns = document.querySelectorAll('.answer-btn');
+            
+            // RESET ALL STYLES SO COLORS DON'T PERSIST
             btns.forEach(btn => {
                 btn.classList.remove('dimmed', 'correct-anim');
                 btn.style.pointerEvents = "all";
+                // CRITICAL FIX: Clear manual style overrides from previous wrongs
+                btn.style.color = "";
+                btn.style.borderColor = "";
+                btn.style.transform = ""; 
             });
 
             const q = questions[currentQIndex];
@@ -509,6 +514,7 @@
                     { transform: 'translateX(-5px)' },
                     { transform: 'translateX(0)' }
                 ], { duration: 300 });
+                // Make it look disabled/wrong
                 wrongBtn.style.color = "#888"; 
                 wrongBtn.style.borderColor = "#888";
             }
@@ -534,7 +540,7 @@
             
             startConfetti();
             
-            // UPDATED: Replace entire card content with just the final message
+            // FINAL MESSAGE REPLACEMENT
             finaleCardContent.innerHTML = `
                 <h1 style="border:none; color: var(--pres-gold); font-size: 3rem; margin-bottom: 20px;">Thank You, Madam President.</h1>
                 <p style="font-size: 2.5rem; color: white; font-family: var(--font-serif); margin-top: 30px;">
