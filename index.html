@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Presidential Trivia Challenge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Playfair+Display:wght@700&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Courier+Prime:wght@400;700&family=Poppins:wght@400&display=swap" rel="stylesheet">
     
     <style>
         /* --- RESET & VARIABLES --- */
         :root {
-            --pres-navy: #002868;
-            --pres-red: #BF0A30;
-            --pres-gold: #C5B358;
-            --pres-silver: #E5E5E5;
-            --navy-bg: #0a1f4d;
-            --white: #ffffff;
-            --font-game: 'Poppins', sans-serif;
-            --font-title: 'Playfair Display', serif;
-            --font-tech: 'Courier Prime', monospace; /* For the briefing text */
+            --deep-navy: #050A14;
+            --pres-red: #B22222;  /* Deep Red */
+            --pres-gold: #D4AF37; /* Metallic Gold */
+            --off-white: #F8F8F8;
+            --glass-panel: rgba(5, 10, 20, 0.85);
+            
+            --font-serif: 'Playfair Display', serif;
+            --font-mono: 'Courier Prime', monospace;
+            --font-sans: 'Poppins', sans-serif;
         }
 
         * {
@@ -30,10 +30,12 @@
             padding: 0;
             height: 100%;
             width: 100%;
-            font-family: var(--font-game);
-            background-color: var(--navy-bg);
+            font-family: var(--font-sans);
+            background-color: var(--deep-navy);
+            color: var(--off-white);
             overflow: hidden;
-            background-image: radial-gradient(circle at 50% 40%, #1a3a70 0%, #020817 100%);
+            /* Subtle vignette for that "Dark Room" feel */
+            background-image: radial-gradient(circle at 50% 50%, #0b1629 0%, #000000 100%);
         }
 
         /* --- LAYOUT CONTAINERS --- */
@@ -49,115 +51,111 @@
             z-index: 10;
         }
 
-        /* --- OVERLAYS --- */
+        /* --- OVERLAYS (Intro / Briefing) --- */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(2, 8, 23, 0.98);
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 200;
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            transition: opacity 0.5s ease-out;
             text-align: center;
-            color: white;
         }
 
         .overlay.hidden {
             opacity: 0;
             pointer-events: none;
-            transform: scale(1.1); /* Slight zoom out effect on exit */
         }
 
-        /* --- INTRO SCREEN --- */
+        /* Intro Typography */
         h1 {
-            font-family: var(--font-title);
-            font-size: 3.5rem;
-            color: var(--white);
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            color: var(--pres-gold); /* Gold Title */
             text-transform: uppercase;
             letter-spacing: 4px;
-            border-bottom: 3px solid var(--pres-red);
+            border-bottom: 2px solid var(--pres-red);
             padding-bottom: 15px;
             margin-bottom: 30px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .subtitle {
-            font-family: var(--font-game);
-            font-size: 1.2rem;
-            font-style: italic;
-            color: #ccc;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: #888;
             margin-bottom: 30px;
+            letter-spacing: 2px;
         }
 
         input[type="text"] {
             padding: 15px;
-            font-size: 1.5rem;
-            border: 2px solid var(--pres-gold);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-radius: 5px;
+            font-size: 1.2rem;
+            background: transparent;
+            border: 1px solid var(--pres-gold);
+            color: var(--pres-gold);
+            border-radius: 0px; /* Sharp corners */
             width: 80%;
             max-width: 350px;
             text-align: center;
-            font-family: var(--font-title);
+            font-family: var(--font-mono);
             outline: none;
             transition: all 0.3s;
+            text-transform: uppercase;
         }
 
         input[type="text"]:focus {
-            background: rgba(255,255,255,0.2);
-            box-shadow: 0 0 15px var(--pres-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.05);
         }
 
+        /* Standard Button Style */
         .btn-start {
             margin-top: 30px;
-            padding: 15px 50px;
-            font-size: 1.5rem;
+            padding: 15px 40px;
+            font-size: 1.1rem;
             background-color: var(--pres-red);
             color: white;
-            border: 1px solid white;
-            border-radius: 5px;
-            font-family: var(--font-title);
+            border: none;
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             transition: transform 0.2s, background 0.2s;
         }
 
         .btn-start:hover {
-            transform: scale(1.05);
-            background-color: #a00020;
+            background-color: #d63030;
+            box-shadow: 0 0 15px rgba(178, 34, 34, 0.6);
         }
 
-        /* --- BRIEFING SCREEN (New Transition) --- */
+        /* --- BRIEFING SCREEN (Paper File Look) --- */
         .briefing-card {
-            background: #fff;
+            background: #f0f0f0;
             color: #111;
             padding: 40px;
             max-width: 600px;
             width: 90%;
-            border: 1px solid #999;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
             position: relative;
             transform: rotate(-1deg);
-            /* Looks like a paper file */
-            background-image: repeating-linear-gradient(#fff 0%, #fff 24px, #e5e5e5 25px);
+            background-image: repeating-linear-gradient(#f0f0f0 0%, #f0f0f0 24px, #e0e0e0 25px);
         }
 
-        /* "Top Secret" Stamp */
         .stamp {
             position: absolute;
             top: 20px;
             right: 20px;
             border: 3px solid var(--pres-red);
             color: var(--pres-red);
-            font-family: var(--font-game);
+            font-family: var(--font-sans);
             font-weight: 900;
             font-size: 1.2rem;
             padding: 5px 10px;
@@ -167,154 +165,154 @@
         }
 
         .briefing-text {
-            font-family: var(--font-tech);
-            font-size: 1.1rem;
+            font-family: var(--font-mono);
+            font-size: 1rem;
             text-align: left;
-            line-height: 1.8;
+            line-height: 1.6;
         }
 
-        .briefing-title {
-            font-size: 1.5rem;
-            text-decoration: underline;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .mission-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .mission-list li {
-            margin-bottom: 10px;
-        }
-
-        /* --- GAME BOARD --- */
+        /* --- GAME BOARD (The Overhaul) --- */
         #game-board {
             width: 100%;
             max-width: 900px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 80%;
             justify-content: center;
             transition: opacity 0.5s;
+            /* Thin tech border */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3); /* Slight tint behind everything */
         }
 
-        /* Question Box */
-        .question-card {
-            background: var(--white);
+        /* The Question Area */
+        .question-container {
             width: 100%;
-            padding: 40px;
-            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-            margin-bottom: 30px;
-            border-top: 5px solid var(--pres-navy);
-            border-bottom: 5px solid var(--pres-red);
-            min-height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .security-label {
+            display: inline-block;
+            color: var(--pres-red);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            border: 1px solid var(--pres-red);
+            padding: 4px 12px;
+            margin-bottom: 20px;
+            animation: pulseRed 3s infinite;
         }
 
         .question-text {
-            font-size: 2rem;
+            font-family: var(--font-serif);
+            font-size: 2.2rem; /* Large and Elegant */
             font-weight: 700;
-            color: #222;
-            font-family: var(--font-game);
+            color: var(--off-white);
+            line-height: 1.3;
+            text-shadow: 0 4px 4px rgba(0,0,0,0.8);
         }
 
-        /* Answer Grid */
+        /* The Answers Grid */
         .answers-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-columns: 1fr 1fr; /* 2x2 Layout */
             gap: 20px;
             width: 100%;
-            flex-grow: 1; 
         }
 
         .answer-btn {
-            border: none;
-            border-radius: 8px;
-            padding: 20px;
-            font-size: 1.5rem;
+            background: transparent; /* See-through */
+            border: 1px solid var(--pres-gold); /* Thin Gold Line */
+            border-radius: 2px; /* Slight round, mostly sharp */
+            padding: 25px;
+            font-family: var(--font-mono); /* Typewriter font */
+            font-size: 1.1rem;
             font-weight: 700;
-            color: white;
+            color: var(--pres-gold);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
-            transition: transform 0.1s, opacity 0.3s;
-            position: relative;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        /* Presidential Colors */
-        .btn-navy { background-color: var(--pres-navy); }
-        .btn-red { background-color: var(--pres-red); }
-        .btn-gold { background-color: var(--pres-gold); color: #000; text-shadow: none; }
-        .btn-silver { background-color: var(--pres-silver); color: #222; text-shadow: none; }
-
-        .answer-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
-        }
-
-        .dimmed { opacity: 0.3; pointer-events: none; }
-        .correct-anim { transform: scale(1.02); box-shadow: 0 0 20px white; z-index: 10; }
-        
-        #next-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px 50px;
-            font-size: 1.5rem;
-            background: var(--pres-gold);
-            color: black;
-            border: 3px solid white;
-            border-radius: 50px;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            z-index: 100;
-            display: none;
             text-transform: uppercase;
-        }
-        
-        #next-btn:active {
-            transform: translate(-50%, -48%);
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+        /* Hover Effect: Subtle Gold Glow */
+        .answer-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Active/Click State */
+        .answer-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Correct/Selected State: Solid Red */
+        .correct-anim {
+            background-color: var(--pres-red) !important;
+            border-color: var(--pres-red) !important;
+            color: white !important;
+            box-shadow: 0 0 20px rgba(178, 34, 34, 0.5);
+            z-index: 10;
+        }
+
+        .dimmed {
+            opacity: 0.3;
+            pointer-events: none;
+            border-color: #444;
+            color: #666;
+        }
+
+        /* Next Button */
+        #next-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            background: var(--pres-gold);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            letter-spacing: 2px;
+            animation: slideUp 0.3s ease-out;
+        }
+        
         /* --- FINALE --- */
         .finale-card {
-            background: linear-gradient(135deg, var(--pres-navy), #000);
-            border-radius: 15px;
-            padding: 50px;
+            background: linear-gradient(180deg, #0a1120 0%, #000 100%);
+            border: 1px solid var(--pres-gold);
+            padding: 60px;
             text-align: center;
             max-width: 700px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            border: 4px solid var(--pres-gold);
-            color: white;
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--off-white);
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes pulseRed {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; text-shadow: 0 0 10px var(--pres-red); }
+            100% { opacity: 0.7; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Mobile Tweaks */
         @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            .question-text { font-size: 1.4rem; }
-            .answers-grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr); gap: 10px; }
-            .answer-btn { padding: 15px; font-size: 1.2rem; min-height: 70px; }
-            #game-board { height: 90%; }
+            h1 { font-size: 2rem; }
+            .question-text { font-size: 1.5rem; }
+            .answers-grid { grid-template-columns: 1fr; gap: 15px; } /* Stack on mobile */
+            .answer-btn { padding: 20px; font-size: 1rem; }
+            #game-board { padding: 20px; border: none; background: transparent; }
         }
     </style>
 </head>
@@ -328,64 +326,66 @@
 
     <div id="intro-screen" class="overlay">
         <h1>Presidential Briefing</h1>
-        <p class="subtitle">Please identify yourself for the press.</p>
-        <input type="text" id="name-input" placeholder="ENTER NAME" autocomplete="off">
-        <button class="btn-start" onclick="validateIdentity()">Start Briefing</button>
-        <p id="error-msg" style="color: #ff4444; margin-top: 20px; font-weight:bold; letter-spacing: 1px; display: none;">ACCESS DENIED</p>
-        <p id="success-msg" style="color: #28a745; margin-top: 20px; font-weight:bold; letter-spacing: 1px; font-size: 1.5rem; display: none; text-shadow: 0 0 10px #28a745;">ACCESS GRANTED</p>
+        <p class="subtitle">IDENTITY VERIFICATION REQUIRED</p>
+        <input type="text" id="name-input" placeholder="ENTER CODENAME" autocomplete="off">
+        <button class="btn-start" onclick="validateIdentity()">AUTHENTICATE</button>
+        <p id="error-msg" style="color: #ff4444; margin-top: 20px; font-family: var(--font-mono); font-size: 0.9rem; display: none;">> ACCESS DENIED</p>
+        <p id="success-msg" style="color: #28a745; margin-top: 20px; font-family: var(--font-mono); font-size: 1.2rem; display: none; text-shadow: 0 0 10px #28a745;">> ACCESS GRANTED</p>
     </div>
 
     <div id="briefing-screen" class="overlay hidden">
         <div class="briefing-card">
             <div class="stamp">TOP SECRET</div>
             <div class="briefing-text">
-                <div class="briefing-title">OFFICIAL BRIEFING</div>
+                <p style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;"><strong>CLASSIFIED BRIEFING // #46-B</strong></p>
                 <p><strong>TO:</strong> Madam President (Designate)</p>
                 <p><strong>SUBJECT:</strong> Executive Trivia Protocol</p>
                 <p><strong>MISSION ORDERS:</strong></p>
-                <ul class="mission-list">
+                <ul style="margin-bottom: 30px;">
                     <li>Review 5 historical inquiries regarding former Commanders-in-Chief.</li>
-                    <li>Demonstrate executive knowledge to verify your eligibility.</li>
-                    <li>Secure the nomination for the holiday.</li>
+                    <li>Demonstrate executive knowledge to verify eligibility.</li>
+                    <li>Secure nomination for the holiday.</li>
                 </ul>
-                <p style="text-align: center; margin-top: 30px; font-style: italic;">
-                    "Good luck, Madam President. The Situation Room is waiting."
+                <p style="text-align: center; font-style: italic; font-family: var(--font-serif);">
+                    "Good luck, Madam President."
                 </p>
             </div>
             <div style="text-align: center; margin-top: 20px;">
-                <button class="btn-start" style="background-color: var(--pres-navy);" onclick="enterSituationRoom()">ENTER SITUATION ROOM</button>
+                <button class="btn-start" onclick="enterSituationRoom()">ENTER SITUATION ROOM</button>
             </div>
         </div>
     </div>
 
     <div id="app-container" style="display:none;">
         <div id="game-board">
-            <div class="question-card">
-                <div class="question-text" id="q-text">Loading...</div>
+            
+            <div class="question-container">
+                <div class="security-label">TOP SECRET // EYES ONLY</div>
+                <div class="question-text" id="q-text">Loading Data...</div>
             </div>
 
             <div class="answers-grid">
-                <button class="answer-btn btn-navy" id="btn-0" onclick="handleAnswer(0)">A</button>
-                <button class="answer-btn btn-red" id="btn-1" onclick="handleAnswer(1)">B</button>
-                <button class="answer-btn btn-gold" id="btn-2" onclick="handleAnswer(2)">C</button>
-                <button class="answer-btn btn-silver" id="btn-3" onclick="handleAnswer(3)">D</button>
+                <button class="answer-btn" id="btn-0" onclick="handleAnswer(0)">Option A</button>
+                <button class="answer-btn" id="btn-1" onclick="handleAnswer(1)">Option B</button>
+                <button class="answer-btn" id="btn-2" onclick="handleAnswer(2)">Option C</button>
+                <button class="answer-btn" id="btn-3" onclick="handleAnswer(3)">Option D</button>
             </div>
             
-            <button id="next-btn" onclick="nextQuestion()">Next Question ></button>
+            <button id="next-btn" onclick="nextQuestion()">NEXT QUESTION ></button>
         </div>
     </div>
 
     <div id="finale-screen" class="overlay hidden">
         <div class="finale-card">
-            <h1 style="border:none; margin-bottom: 10px; font-size: 2.5rem;">Briefing Complete</h1>
-            <p style="font-size: 1.5rem; line-height: 1.6; margin-bottom: 30px; font-family: var(--font-game);">
+            <h1 style="border:none; margin-bottom: 10px; font-size: 2.5rem; color: var(--pres-gold);">Briefing Complete</h1>
+            <p style="font-size: 1.4rem; line-height: 1.6; margin-bottom: 30px; font-family: var(--font-serif);">
                 Distinguished performance. You are clearly fit for the highest office.<br><br>
                 <strong>But first, I have one question:</strong>
             </p>
-            <h2 id="proposal-text" style="color: var(--pres-gold); font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 40px;">
+            <h2 id="proposal-text" style="color: var(--off-white); font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 40px; text-shadow: 0 0 10px white;">
                 Minali, will you be my President for Presidents Day?
             </h2>
-            <button class="btn-start" id="yes-btn" onclick="acceptProposal()" style="background-color: #28a745; border-color: var(--pres-gold);">YES!</button>
+            <button class="btn-start" id="yes-btn" onclick="acceptProposal()" style="background-color: #28a745;">YES, I ACCEPT</button>
         </div>
     </div>
 
@@ -442,7 +442,7 @@
 
             if (name.toLowerCase() !== "minali") {
                 errorMsg.style.display = 'block';
-                input.style.borderColor = "red";
+                input.style.borderColor = "#ff4444";
                 return;
             }
 
@@ -485,8 +485,8 @@
             const btns = document.querySelectorAll('.answer-btn');
             btns.forEach(btn => {
                 btn.classList.remove('dimmed', 'correct-anim');
-                btn.style.backgroundColor = ""; 
                 btn.style.pointerEvents = "all";
+                // Reset Text content to options (remove checks/x)
             });
 
             // Load Content
@@ -509,20 +509,29 @@
                 btns.forEach((btn, idx) => {
                     if (idx === correctIndex) {
                         btn.classList.add('correct-anim');
-                        btn.innerHTML = "CORRECT &#10003;"; 
+                        // Add checkmark without losing monospace look
+                        btn.innerHTML = qText.innerText.includes("Loading") ? "CORRECT" : questions[currentQIndex].options[idx]; 
                     } else {
                         btn.classList.add('dimmed');
                     }
                 });
                 
                 // Show Next Button
-                nextBtn.style.display = 'block';
+                nextBtn.style.display = 'inline-block';
 
             } else {
                 // WRONG - Shake the button
                 const wrongBtn = document.getElementById('btn-' + choiceIndex);
-                wrongBtn.style.backgroundColor = "#555"; 
-                wrongBtn.textContent = "Try Again";
+                // Shake effect manually or via class
+                wrongBtn.animate([
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(5px)' },
+                    { transform: 'translateX(-5px)' },
+                    { transform: 'translateX(0)' }
+                ], { duration: 300 });
+                
+                wrongBtn.style.color = "#888"; 
+                wrongBtn.style.borderColor = "#888";
             }
         }
 
@@ -568,7 +577,7 @@
             { front : '#BF0A30', back: '#7c0a22' }, 
             { front : '#002868', back: '#001942' }, 
             { front : '#FFFFFF', back: '#dcdcdc' }, 
-            { front : '#C5B358', back: '#8c7e3b' } 
+            { front : '#D4AF37', back: '#8c7e3b' } 
         ];
 
         window.addEventListener('resize', () => {
